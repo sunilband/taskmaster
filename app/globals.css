@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Elsie&family=Space+Mono&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -5,4 +6,17 @@
 
 
 
+.glass {
+    /* background: rgba(255, 255, 255, 0.078); */
+    background: rgba(101, 101, 101, 0.078);
+    backdrop-filter: blur(2px);
+    z-index: 0;
+  }
 
+  .elise{
+    font-family: 'Elsie', cursive;
+  }
+
+  .spacemono{
+    font-family: 'Space Mono', monospace;
+  }
