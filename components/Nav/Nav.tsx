@@ -1,13 +1,29 @@
-"use client"
+"use client";
 import React from "react";
-
-import {Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button,NavbarMenuItem,NavbarMenu,NavbarMenuToggle,Avatar} from "@nextui-org/react";
+import { useUserContext } from "@/context/userContexts";
+import {
+  Navbar,
+  NavbarBrand,
+  NavbarContent,
+  NavbarItem,
+  Link,
+  Button,
+  NavbarMenuItem,
+  NavbarMenu,
+  NavbarMenuToggle,
+  Avatar,
+} from "@nextui-org/react";
 import AcmeLogo from "./Logo";
+import { usePathname ,useRouter} from "next/navigation";
+const cookieCutter = require('cookie-cutter');
 
-type Props = {}
+type Props = {};
 
 const Nav = (props: Props) => {
-    const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const { user, setUser } = useUserContext();
+  const path = usePathname();
+  const router = useRouter();
 
   const menuItems = [
     "Profile",
@@ -21,8 +37,24 @@ const Nav = (props: Props) => {
     "Help & Feedback",
     "Log Out",
   ];
+  const name = user.name
+    ? user.name
+        .split(" ")
+        .map((x) => x[0])
+        .join(" ")
+        .toUpperCase()
+    : "";
+  const handleSignout = () => {
+    cookieCutter.set('taskmastertoken', '', { expires: new Date(0) })
+    setUser({token:null,name:null,email:null});
+    router.push("/login");
+  };
   return (
-    <Navbar onMenuOpenChange={setIsMenuOpen} shouldHideOnScroll className="fixed">
+    <Navbar
+      onMenuOpenChange={setIsMenuOpen}
+      shouldHideOnScroll
+      className="fixed"
+    >
       <NavbarContent>
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
@@ -52,33 +84,48 @@ const Nav = (props: Props) => {
         </NavbarItem>
       </NavbarContent>
       <NavbarContent justify="end">
-        <NavbarItem className="hidden lg:flex">
-          <Link href="#">Login</Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Button as={Link} color="primary" href="#" variant="flat">
+        {path=="/signup"?<NavbarItem className="hidden lg:flex">
+          <Button as={Link} color="primary" href="/login" variant="flat">
+            Login
+          </Button>
+        </NavbarItem>:null}
+       {path=="/login"?<NavbarItem>
+          <Button as={Link} color="primary" href="/signup" variant="flat">
             Sign Up
           </Button>
-        </NavbarItem>
+        </NavbarItem>:null}
+        {user.token?<NavbarItem>
+          <Button
+            as={Link}
+            color="danger"
+            onClick={handleSignout}
+            variant="flat"
+          >
+            Logout
+          </Button>
+        </NavbarItem>:null}
         <Avatar
-              isBordered
-              as="button"
-              className="transition-transform"
-              color="secondary"
-              name="Jason Hughes"
-              size="sm"
-              src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
-            />
+          isBordered
+          as="button"
+          className="transition-transform"
+          color="secondary"
+          name={name}
+          size="md"
+        />
       </NavbarContent>
       {/*  */}
-      
+
       {/*  */}
       <NavbarMenu>
         {menuItems.map((item, index) => (
           <NavbarMenuItem key={`${item}-${index}`}>
             <Link
               color={
-                index === 2 ? "primary" : index === menuItems.length - 1 ? "danger" : "foreground"
+                index === 2
+                  ? "primary"
+                  : index === menuItems.length - 1
+                  ? "danger"
+                  : "foreground"
               }
               className="w-full"
               href="#"
@@ -91,6 +138,6 @@ const Nav = (props: Props) => {
       </NavbarMenu>
     </Navbar>
   );
-}
+};
 
-export default Nav
+export default Nav;

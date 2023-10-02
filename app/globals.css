@@ -20,3 +20,7 @@
   .spacemono{
     font-family: 'Space Mono', monospace;
   }
+
+  label {
+    color: white !important;
+  }
