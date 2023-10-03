@@ -3,8 +3,9 @@ import { UserModel } from "@/utils/backend/userModel";
 import { connectDB } from "@/utils/backend/mongoDB";
 import jwt from "jsonwebtoken";
 import { headers } from 'next/headers'
+import { TaskModel } from "@/utils/backend/taskModel";
 
-export async function GET(req, res) {
+export async function POST(req, res) {
   try {
 
   const headersInstance = headers()
@@ -21,7 +22,18 @@ export async function GET(req, res) {
           status: 400,
         }
       );
-
+    const { task,desc,priority,status } = await req.json();
+    console.log(task,desc,priority,status)
+    if (!task || !desc || !priority || !status)
+      return new NextResponse(
+        JSON.stringify({
+          success: false,
+          error: "Incomplete data",
+        }),
+        {
+          status: 400,
+        }
+      );
     await connectDB();
     const token=taskmastertoken;
     const verified = jwt.verify(token, process.env.NEXT_PUBLIC_JWT_SECRET);
@@ -38,16 +50,20 @@ export async function GET(req, res) {
         }
       );
 
+      const newTask= await TaskModel.create({
+        task:task,
+        desc:desc,
+        priority:priority,
+        status:status,
+        user:user._id
+      })
+
      
     return new NextResponse(
       JSON.stringify({
         success: true,
-        message: "Welcome back " + user.name + " ! ",
-        user: {
-          name: user.name,
-          email: user.email,
-          token: token,
-        },
+        message: "Task created successfully !",
+        data:newTask
       }),
       {
         status: 200,
