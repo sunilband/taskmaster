@@ -1,12 +1,11 @@
+"use client"
 import Table from "@/components/Table/Table";
-import Waves from "@/components/Waves/Waves";
 
+import {motion} from "framer-motion";
 export default function Home() {
   return (
-    <div>
-        {/* <div className="gradientBG h-screen w-screen"></div> */}
+    <div className="overflow-clip">
         <Table />
-
     </div>
   );
 }

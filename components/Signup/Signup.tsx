@@ -13,6 +13,7 @@ import { useUserContext } from "@/context/userContexts";
 import { getuser } from "@/utils/apiCalls/GetUser";
 import "../Login/Login.css"
 const cookieCutter = require('cookie-cutter');
+import { motion } from "framer-motion";
 
 type Props = {};
 
@@ -79,7 +80,21 @@ const Signup = (props: Props) => {
   return (
     <div className="relative flex justify-center items-center h-screen w-screen  spacemono">
       <Waves />
-      <div className="h-[500px] w-[330px] md:h-[500px] md:w-[400px] flex justify-center items-center  rounded-md z-50 glass shadow-2xl border">
+      <motion.div
+      initial={{
+        scale: 0,
+        y: -300,
+      }}
+      animate={{
+        scale: 1,
+        y: 0,
+      }}
+      transition={{
+        type: "spring",
+        duration: 1,
+      }}
+      viewport={{ once: true }}
+      className="h-[500px] w-[330px] md:h-[500px] md:w-[400px] flex justify-center items-center  rounded-md z-50 glass shadow-2xl border">
         <div className="flex flex-col gap-8 md:h-[450px] md:w-[350px] w-[310px] h-[380px] p-2">
           <Input
             type="text"
@@ -140,7 +155,7 @@ const Signup = (props: Props) => {
             </Link>
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

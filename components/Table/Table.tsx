@@ -6,6 +6,7 @@ import { useUserContext } from "@/context/userContexts";
 import { getuser } from "@/utils/apiCalls/GetUser";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { motion } from "framer-motion";
 const cookieCutter = require("cookie-cutter");
 
 import {
@@ -67,8 +68,8 @@ const INITIAL_VISIBLE_COLUMNS = [
 export default function App() {
   const { user, setUser } = useUserContext();
   const router = useRouter();
-  const [token, setToken] = useState("")
-  // 
+  const [token, setToken] = useState("");
+  //
   const [tasks, setTasks] = useState([]);
   const [refresh, setRefresh] = useState(false);
   const [updateButtonClick, setUpdateButtonClick] = useState(false);
@@ -323,25 +324,64 @@ export default function App() {
     return (
       <div className="flex flex-col gap-4">
         <div className="flex justify-between gap-3 items-end">
-          <Input
-            isClearable
-            className="w-full sm:max-w-[44%]"
-            placeholder="Search..."
-            startContent={<SearchIcon />}
-            value={filterValue}
-            onClear={() => onClear()}
-            onValueChange={onSearchChange}
-          />
+          <motion.div
+            initial={{
+              scale: 0,
+              x: -100,
+              y: 300,
+            }}
+            animate={{
+              scale: 1,
+              x: 0,
+              y: 0,
+            }}
+            transition={{
+              type: "spring",
+              duration: 2,
+              delay: 0.5,
+            }}
+            viewport={{ once: true }}
+            className="w-full"
+          >
+            <Input
+              isClearable
+              className="w-full sm:max-w-[44%]"
+              placeholder="Search..."
+              startContent={<SearchIcon />}
+              value={filterValue}
+              onClear={() => onClear()}
+              onValueChange={onSearchChange}
+            />
+          </motion.div>
+
           <div className="flex gap-3">
             <Dropdown>
-              <DropdownTrigger className="hidden sm:flex">
+              <motion.DropdownTrigger
+                initial={{
+                  scale: 0,
+                  x: -100,
+                  y: -300,
+                }}
+                animate={{
+                  scale: 1,
+                  x: 0,
+                  y: 0,
+                }}
+                transition={{
+                  type: "spring",
+                  duration: 2,
+                  delay: 0.5,
+                }}
+                viewport={{ once: true }}
+                className="hidden sm:flex"
+              >
                 <Button
                   endContent={<ChevronDownIcon className="text-small" />}
                   variant="flat"
                 >
                   Status
                 </Button>
-              </DropdownTrigger>
+              </motion.DropdownTrigger>
               <DropdownMenu
                 disallowEmptySelection
                 aria-label="Table Columns"
@@ -359,14 +399,32 @@ export default function App() {
             </Dropdown>
 
             <Dropdown>
-              <DropdownTrigger className="hidden sm:flex">
+              <motion.DropdownTrigger
+                initial={{
+                  scale: 0,
+                  x: -100,
+                  y: -300,
+                }}
+                animate={{
+                  scale: 1,
+                  x: 0,
+                  y: 0,
+                }}
+                transition={{
+                  type: "spring",
+                  duration: 2,
+                  delay: 0.5,
+                }}
+                viewport={{ once: true }}
+                className="hidden sm:flex"
+              >
                 <Button
                   endContent={<ChevronDownIcon className="text-small" />}
                   variant="flat"
                 >
                   Priority
                 </Button>
-              </DropdownTrigger>
+              </motion.DropdownTrigger>
               <DropdownMenu
                 disallowEmptySelection
                 aria-label="Table Columns"
@@ -383,14 +441,32 @@ export default function App() {
               </DropdownMenu>
             </Dropdown>
             <Dropdown>
-              <DropdownTrigger className="hidden sm:flex">
+              <motion.DropdownTrigger
+                initial={{
+                  scale: 0,
+                  x: -100,
+                  y: -300,
+                }}
+                animate={{
+                  scale: 1,
+                  x: 0,
+                  y: 0,
+                }}
+                transition={{
+                  type: "spring",
+                  duration: 2,
+                  delay: 0.5,
+                }}
+                viewport={{ once: true }}
+                className="hidden sm:flex"
+              >
                 <Button
                   endContent={<ChevronDownIcon className="text-small" />}
                   variant="flat"
                 >
                   Columns
                 </Button>
-              </DropdownTrigger>
+              </motion.DropdownTrigger>
               <DropdownMenu
                 disallowEmptySelection
                 aria-label="Table Columns"
@@ -399,26 +475,47 @@ export default function App() {
                 selectionMode="multiple"
                 onSelectionChange={setVisibleColumns}
               >
-                {columns.map((column) => (
-                  <DropdownItem key={column.uid} className="capitalize">
-                    {capitalize(column.name)}
-                  </DropdownItem>
-                ))}
+                {columns.map((column) =>
+                  column.name != "ID" ? (
+                    <DropdownItem key={column.uid} className="capitalize">
+                      {capitalize(column.name)}
+                    </DropdownItem>
+                  ) : null
+                )}
               </DropdownMenu>
             </Dropdown>
-            <Button
-              color="primary"
-              endContent={<PlusIcon />}
-              onPress={() => {
-                setViewButtonClick(false);
-                setUpdateButtonClick(false);
-                setDeleteButtonCliked(false);
-                setAddButtonCliked(true);
-                onOpen();
+            <motion.div
+              initial={{
+                scale: 0,
+                x: -100,
+                y: -300,
               }}
+              animate={{
+                scale: 1,
+                x: 0,
+                y: 0,
+              }}
+              transition={{
+                type: "spring",
+                duration: 2,
+                delay: 0.5,
+              }}
+              viewport={{ once: true }}
             >
-              Add New
-            </Button>
+              <Button
+                color="primary"
+                endContent={<PlusIcon />}
+                onPress={() => {
+                  setViewButtonClick(false);
+                  setUpdateButtonClick(false);
+                  setDeleteButtonCliked(false);
+                  setAddButtonCliked(true);
+                  onOpen();
+                }}
+              >
+                Add New
+              </Button>
+            </motion.div>
           </div>
         </div>
         <div className="flex justify-between items-center">
@@ -492,13 +589,12 @@ export default function App() {
     );
   }, [selectedKeys, items.length, page, pages, hasSearchFilter]);
 
-  
   useEffect(() => {
     const taskmastertoken = cookieCutter.get("taskmastertoken");
     if (taskmastertoken) {
       getuser(taskmastertoken).then((res) => {
         setUser(res.user);
-        setToken(res.user.token)
+        setToken(res.user.token);
       });
     } else {
       router.push("/login");
@@ -515,8 +611,6 @@ export default function App() {
         }
       });
   }, [refresh, user.token]);
-
- 
 
   return (
     <div className="h-screen w-screen flex justify-center items-center px-4">
@@ -554,12 +648,12 @@ export default function App() {
 
       {deleteButtonCliked ? (
         <DeleteModel
-        isOpenUpdate={isOpen}
-        onOpenChangeUpdate={onOpenChange}
-        onOpenUpdate={onOpen}
-        data={deleteData}
-        refresh={refresh}
-        setRefresh={setRefresh}
+          isOpenUpdate={isOpen}
+          onOpenChangeUpdate={onOpenChange}
+          onOpenUpdate={onOpen}
+          data={deleteData}
+          refresh={refresh}
+          setRefresh={setRefresh}
         />
       ) : null}
       <Table
@@ -603,7 +697,25 @@ export default function App() {
               }}
             >
               {(columnKey) => (
-                <TableCell>{renderCell(item, columnKey)}</TableCell>
+                <TableCell><motion.div
+                initial={{
+                  // scale: 0,
+                  x: -100,
+                }}
+                animate={{
+                  // scale: 1,
+                  x: 0,
+                }}
+                transition={{
+                  type: "spring",
+                  duration: 1,
+                }}
+                viewport={{ once: true }}
+                >
+
+                {renderCell(item, columnKey)}
+                </motion.div>
+                </TableCell>
               )}
             </TableRow>
           )}
