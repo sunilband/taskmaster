@@ -1,26 +1,43 @@
-@import url('https://fonts.googleapis.com/css2?family=Elsie&family=Space+Mono&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Elsie&family=Space+Mono&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-
-
-
 .glass {
-    /* background: rgba(255, 255, 255, 0.078); */
-    background: rgba(101, 101, 101, 0.078);
-    backdrop-filter: blur(2px);
-    z-index: 0;
+  /* background: rgba(255, 255, 255, 0.078); */
+  background: rgba(101, 101, 101, 0.078);
+  backdrop-filter: blur(2px);
+  z-index: 0;
+}
+
+.elise {
+  font-family: "Elsie", cursive;
+}
+
+.spacemono {
+  font-family: "Space Mono", monospace;
+}
+
+.gradientBG {
+  position: absolute;
+  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
+  opacity: 50%;
+  height: 100vh;
+  z-index: -1;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
   }
 
-  .elise{
-    font-family: 'Elsie', cursive;
+  50% {
+    background-position: 100% 50%;
   }
 
-  .spacemono{
-    font-family: 'Space Mono', monospace;
+  100% {
+    background-position: 0% 50%;
   }
-
-  /* label {
-    color: white !important;
-  } */
+}

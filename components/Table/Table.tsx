@@ -39,6 +39,7 @@ import { WorkIcon } from "./WorkIcon";
 import { UpArrow } from "./UpArrow";
 import InsertModal from "../InsertModal/InsertModal";
 import UpdateModal from "../UpdateModal/UpdateModal";
+import ViewModel from "../ViewModel/ViewModel";
 import { useDisclosure } from "@nextui-org/react";
 import { useTaskContext } from "@/context/taskContext";
 import { gettasks } from "@/utils/apiCalls/GetTasks";
@@ -64,8 +65,11 @@ export default function App() {
   const [tasks, setTasks] = useState([]);
   const [refresh, setRefresh] = useState(false);
   const [updateButtonClick, setUpdateButtonClick] = useState(false);
+  const [viewButtonClick, setViewButtonClick] = useState(false);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [addButtonCliked, setAddButtonCliked] = useState(false);
   const [updateData, setUpdateData] = useState({});
+  const [viewData, setViewData] = useState({});
   const [filterValue, setFilterValue] = React.useState("");
   const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
   const [visibleColumns, setVisibleColumns] = React.useState(
@@ -168,7 +172,7 @@ export default function App() {
             <p className="text-[10px]">{timeParser(user.updatedAt)}</p>
           </div>
         ) : (
-          <p>Never</p>
+          <p className="text-blue-500">Never</p>
         );
       case "status":
         return cellValue == "Completed" ? (
@@ -197,9 +201,9 @@ export default function App() {
           </Chip>
         ) : null;
 
-        //   <Chip className="capitalize" color={statusColorMap[user.status]} size="sm" variant="flat">
-        //     {cellValue}
-        //   </Chip>
+      //   <Chip className="capitalize" color={statusColorMap[user.status]} size="sm" variant="flat">
+      //     {cellValue}
+      //   </Chip>
       case "priority":
         return cellValue == "High" ? (
           <div className="flex flex-row  items-center gap-1">
@@ -226,7 +230,16 @@ export default function App() {
           <div className="relative flex items-center gap-2">
             <Tooltip content="Details">
               <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-                <EyeIcon />
+                <EyeIcon
+                  onClick={(e: any) => {
+                    e.stopPropagation();
+                    setUpdateButtonClick(false);
+                    setAddButtonCliked(false);
+                    setViewButtonClick(true);
+                    setViewData(user);
+                    onOpen();
+                  }}
+                />
               </span>
             </Tooltip>
             <Tooltip content="Edit task">
@@ -234,6 +247,8 @@ export default function App() {
                 <EditIcon
                   onClick={(e: any) => {
                     e.stopPropagation();
+                    setViewButtonClick(false);
+                    setAddButtonCliked(false);
                     setUpdateButtonClick(true);
                     setUpdateData(user);
                     onOpen();
@@ -375,7 +390,9 @@ export default function App() {
               color="primary"
               endContent={<PlusIcon />}
               onPress={() => {
+                setViewButtonClick(false);
                 setUpdateButtonClick(false);
+                setAddButtonCliked(true);
                 onOpen();
               }}
             >
@@ -463,33 +480,33 @@ export default function App() {
       getuser(taskmastertoken).then((res) => {
         setUser(res.user);
       });
-      console.log("user token", user.token, taskmastertoken, user);
-      
     } else {
       router.push("/login");
     }
   }, []);
 
   useEffect(() => {
-    console.log("tasks fetched")
-    if(user.token)
-    gettasks(user.token?user.token:"").then((res) => {
-      if (res.error) {
-        toast.error(res.error);
-      } else {
-        console.log("tasks", res.data);
-        setTasks(res.data);
-      }
-    });
-  }, [refresh,user.token]);
+    if (user.token)
+      gettasks(user.token ? user.token : "").then((res) => {
+        if (res.error) {
+          toast.error(res.error);
+        } else {
+          setTasks(res.data.reverse());
+        }
+      });
+  }, [refresh, user.token]);
 
   return (
     <div className="h-screen w-screen flex justify-center items-center px-4">
-      <InsertModal
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
-        onOpen={onOpen}
-      />
+      {addButtonCliked ? (
+        <InsertModal
+          isOpen={isOpen}
+          onOpenChange={onOpenChange}
+          onOpen={onOpen}
+          refresh={refresh}
+          setRefresh={setRefresh}
+        />
+      ) : null}
 
       {updateButtonClick ? (
         <UpdateModal
@@ -497,6 +514,17 @@ export default function App() {
           onOpenChangeUpdate={onOpenChange}
           onOpenUpdate={onOpen}
           data={updateData}
+          refresh={refresh}
+          setRefresh={setRefresh}
+        />
+      ) : null}
+
+      {viewButtonClick ? (
+        <ViewModel
+          isOpenView={isOpen}
+          onOpenChangeView={onOpenChange}
+          onOpenView={onOpen}
+          data={viewData}
           refresh={refresh}
           setRefresh={setRefresh}
         />
@@ -514,7 +542,7 @@ export default function App() {
         color="primary"
         sortDescriptor={sortDescriptor}
         topContent={topContent}
-        topContentPlacement="inside"
+        topContentPlacement="outside"
         onSelectionChange={setSelectedKeys}
         onSortChange={setSortDescriptor}
       >
@@ -531,7 +559,13 @@ export default function App() {
         </TableHeader>
         <TableBody emptyContent={"No tasks found"} items={sortedItems}>
           {(item) => (
-            <TableRow key={item.id}>
+            <TableRow key={item.id} onDoubleClick={()=>{
+              setViewButtonClick(true);
+              setUpdateButtonClick(false);
+              setAddButtonCliked(false);
+              setViewData(item);
+              onOpen();
+            }}>
               {(columnKey) => (
                 <TableCell>{renderCell(item, columnKey)}</TableCell>
               )}

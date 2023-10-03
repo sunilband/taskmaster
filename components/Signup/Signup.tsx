@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useUserContext } from "@/context/userContexts";
 import { getuser } from "@/utils/apiCalls/GetUser";
+import "../Login/Login.css"
 const cookieCutter = require('cookie-cutter');
 
 type Props = {};
@@ -64,7 +65,6 @@ const Signup = (props: Props) => {
 
     try {
       const data = await signup({ name, email, password });
-      console.log("data", data)
       if (data.success) {
         toast.success(data.message);
         router.push("/login");

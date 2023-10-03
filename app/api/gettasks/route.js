@@ -10,7 +10,6 @@ export async function GET(req, res) {
 
   const headersInstance = headers()
   const taskmastertoken = headersInstance.get('authorization').split('Bearer ')[1]
-  console.log("this is token",taskmastertoken)
 
     if (!taskmastertoken)
       return new NextResponse(
@@ -54,7 +53,7 @@ export async function GET(req, res) {
     return new NextResponse(
       JSON.stringify({
         success: true,
-        message: "Tasks fetched successfully",
+        message: "Tasks fetched !",
         data:allTasks
       }),
       {

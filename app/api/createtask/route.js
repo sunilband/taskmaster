@@ -23,7 +23,6 @@ export async function POST(req, res) {
         }
       );
     const { task,desc,priority,status } = await req.json();
-    console.log(task,desc,priority,status)
     if (!task || !desc || !priority || !status)
       return new NextResponse(
         JSON.stringify({
@@ -62,7 +61,7 @@ export async function POST(req, res) {
     return new NextResponse(
       JSON.stringify({
         success: true,
-        message: "Task created successfully !",
+        message: "Task created!",
         data:newTask
       }),
       {

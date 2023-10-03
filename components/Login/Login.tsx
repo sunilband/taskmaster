@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { login } from "@/utils/apiCalls/Login";
 import { useUserContext } from "@/context/userContexts";
 import { getuser } from "@/utils/apiCalls/GetUser";
+import "./Login.css"
 const cookieCutter = require('cookie-cutter');
 
 
@@ -30,7 +31,8 @@ const Login = (props: Props) => {
       getuser(taskmastertoken).then((res) => {
         setUser(res.user);
       });
-      router.push("/")
+      // router.push("/")
+      window.location.href = "/";
     }
   }, []);
 
@@ -42,14 +44,13 @@ const Login = (props: Props) => {
       setLoggingIn(false);
       return toast.error("Please fill all the fields");
     }
-
-
     try {
       const data = await login({email, password });
       if (data.success) {
         toast.success(data.message);
         setUser(data.user);
-        router.push("/");
+        // router.push("/");
+        window.location.href = "/";
       } else {
         toast.error(data.error);
       }
@@ -63,6 +64,7 @@ const Login = (props: Props) => {
       <Waves />
       <div className="h-[400px] w-[330px] md:h-[500px] md:w-[400px] flex justify-center items-center  rounded-md z-50 glass shadow-2xl border">
         <form className="flex flex-col gap-8 md:h-[450px] md:w-[350px] w-[310px] h-[380px] p-2" onSubmit={handleSubmit}>
+          {/* <label className="text-white font-semibold text-lg">Login</label> */}
           <Input
             type="email"
             variant="underlined"

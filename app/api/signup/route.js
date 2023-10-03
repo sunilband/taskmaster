@@ -34,12 +34,11 @@ export async function POST(req, res) {
       );
     const hashedPassword=await bcrypt.hash(password.toString(),10);
     user = await UserModel.create({ name, email, password:hashedPassword });
-    console.log(user?.name,user?._id)
 
     return new NextResponse(
       JSON.stringify({
         success: true,
-        message: "User created successfully",
+        message: "User created !",
       }),
       {
         status: 200,

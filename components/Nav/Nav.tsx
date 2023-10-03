@@ -54,13 +54,14 @@ const Nav = (props: Props) => {
     <Navbar
       onMenuOpenChange={setIsMenuOpen}
       shouldHideOnScroll
-      className="fixed h-20"
+      className="fixed h-20 bg-white"
     >
       <NavbarContent>
-        <NavbarMenuToggle
+        
+        {/* <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           className="sm:hidden"
-        />
+        /> */}
         <NavbarBrand>
           <AcmeLogo />
           <p className="font-bold text-inherit">TASKMASTER</p>
@@ -144,9 +145,6 @@ const Nav = (props: Props) => {
         ) : null}
         
       </NavbarContent>
-      {/*  */}
-
-      {/*  */}
       <NavbarMenu>
         {menuItems.map((item, index) => (
           <NavbarMenuItem key={`${item}-${index}`}>

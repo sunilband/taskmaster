@@ -20,8 +20,10 @@ type Props = {
   onOpen: any;
   isOpen: any;
   onOpenChange: any;
+  refresh:any;
+    setRefresh:any;
 };
-const InsertModal = ({ onOpen, isOpen, onOpenChange }: Props) => {
+const InsertModal = ({ onOpen, isOpen, onOpenChange,refresh,setRefresh }: Props) => {
   const { user } = useUserContext();
   const [task, setTask] = useState("");
   const [desc, setDesc] = useState("");
@@ -39,12 +41,13 @@ const InsertModal = ({ onOpen, isOpen, onOpenChange }: Props) => {
         if (res.error) {
           toast.error(res.error);
         } else {
-          toast.success("Task Added Successfully");
+          toast.success("Task Added !");
           setTask("");
           setDesc("");
           setPriority("");
           setStatus("");
           onOpenChange(false);
+          setRefresh(!refresh)
         }
       });
     } catch (error) {
@@ -60,7 +63,7 @@ const InsertModal = ({ onOpen, isOpen, onOpenChange }: Props) => {
         isOpen={isOpen}
         onOpenChange={onOpenChange}
         placement="center"
-        className="mx-4"
+        className="mx-4"    
       >
         <ModalContent>
           {(onClose) => (

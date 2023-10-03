@@ -54,13 +54,12 @@ export async function PUT(req, res) {
 
       const updatedtask = await TaskModel.findByIdAndUpdate(data.id,data, {new: true});
       
-      console.log(updatedtask)
 
      
     return new NextResponse(
       JSON.stringify({
         success: true,
-        message: "Task updated successfully !",
+        message: "Task updated !",
         data:updatedtask
       }),
       {
