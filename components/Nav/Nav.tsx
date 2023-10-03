@@ -12,10 +12,11 @@ import {
   NavbarMenu,
   NavbarMenuToggle,
   Avatar,
+  Tooltip,
 } from "@nextui-org/react";
 import AcmeLogo from "./Logo";
-import { usePathname ,useRouter} from "next/navigation";
-const cookieCutter = require('cookie-cutter');
+import { usePathname, useRouter } from "next/navigation";
+const cookieCutter = require("cookie-cutter");
 
 type Props = {};
 
@@ -45,15 +46,15 @@ const Nav = (props: Props) => {
         .toUpperCase()
     : "";
   const handleSignout = () => {
-    cookieCutter.set('taskmastertoken', '', { expires: new Date(0) })
-    setUser({token:null,name:null,email:null});
+    cookieCutter.set("taskmastertoken", "", { expires: new Date(0) });
+    setUser({ token: null, name: null, email: null });
     router.push("/login");
   };
   return (
     <Navbar
       onMenuOpenChange={setIsMenuOpen}
       shouldHideOnScroll
-      className="fixed"
+      className="fixed h-20"
     >
       <NavbarContent>
         <NavbarMenuToggle
@@ -84,34 +85,64 @@ const Nav = (props: Props) => {
         </NavbarItem>
       </NavbarContent>
       <NavbarContent justify="end">
-        {path=="/signup"?<NavbarItem className="hidden lg:flex">
-          <Button as={Link} color="primary" href="/login" variant="flat">
-            Login
-          </Button>
-        </NavbarItem>:null}
-       {path=="/login"?<NavbarItem>
-          <Button as={Link} color="primary" href="/signup" variant="flat">
-            Sign Up
-          </Button>
-        </NavbarItem>:null}
-        {user.token?<NavbarItem>
-          <Button
-            as={Link}
-            color="danger"
-            onClick={handleSignout}
-            variant="flat"
-          >
-            Logout
-          </Button>
-        </NavbarItem>:null}
-        <Avatar
-          isBordered
-          as="button"
-          className="transition-transform"
-          color="secondary"
-          name={name}
-          size="md"
-        />
+      {user.token?<Tooltip
+          content={user.name}
+          className="p-2 mt-1 border bg-[#7828C8] text-white tracking-widest rounded-full px-3"
+          motionProps={{
+            variants: {
+              exit: {
+                opacity: 0,
+                transition: {
+                  duration: 0.1,
+                  ease: "easeIn",
+                },
+              },
+              enter: {
+                opacity: 1,
+                transition: {
+                  duration: 0.15,
+                  ease: "easeOut",
+                },
+              },
+            },
+          }}
+        >
+          <Avatar
+            isBordered
+            as="button"
+            className="transition-transform"
+            color="secondary"
+            name={name}
+            size="md"
+          />
+        </Tooltip>:null}
+        {path == "/signup" ? (
+          <NavbarItem className="hidden lg:flex">
+            <Button as={Link} color="primary" href="/login" variant="flat">
+              Login
+            </Button>
+          </NavbarItem>
+        ) : null}
+        {path == "/login" ? (
+          <NavbarItem>
+            <Button as={Link} color="primary" href="/signup" variant="flat">
+              Sign Up
+            </Button>
+          </NavbarItem>
+        ) : null}
+        {user.token ? (
+          <NavbarItem>
+            <Button
+              as={Link}
+              color="danger"
+              onClick={handleSignout}
+              variant="flat"
+            >
+              Logout
+            </Button>
+          </NavbarItem>
+        ) : null}
+        
       </NavbarContent>
       {/*  */}
 

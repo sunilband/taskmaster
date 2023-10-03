@@ -1,8 +1,7 @@
-import Waves from '@/components/Waves/Waves'
-import Image from 'next/image'
+import Table from '@/components/Table/Table'
 
 export default function Home() {
   return (
-    <h1>hello</h1>
+    <Table/>
   )
 }

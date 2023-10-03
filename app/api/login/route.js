@@ -50,11 +50,11 @@ export async function POST(req, res) {
     return new NextResponse(
       JSON.stringify({
         success: true,
-        message: "Welcome back "+user.name+"! ",
+        message: "Welcome back "+user.name+" ! ",
         user:{
           name:user.name,
           email:user.email,
-          token:token
+          // token:token
         },
       }),
       {

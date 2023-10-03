@@ -27,7 +27,7 @@ const Signup = (props: Props) => {
   useEffect(() => {
     const taskmastertoken = cookieCutter.get('taskmastertoken');
     if (taskmastertoken) {
-      const fetchuser = getuser({taskmastertoken}).then((res) => {
+      const fetchuser = getuser(taskmastertoken).then((res) => {
         setUser(res.user);
       });
       router.push("/");

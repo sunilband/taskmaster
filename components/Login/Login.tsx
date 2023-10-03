@@ -27,10 +27,10 @@ const Login = (props: Props) => {
   useEffect(() => {
     const taskmastertoken = cookieCutter.get('taskmastertoken');
     if (taskmastertoken) {
-      const fetchuser = getuser({taskmastertoken}).then((res) => {
+      getuser(taskmastertoken).then((res) => {
         setUser(res.user);
       });
-      router.push("/");
+      router.push("/")
     }
   }, []);
 
@@ -61,7 +61,7 @@ const Login = (props: Props) => {
   return (
     <div className="relative flex justify-center items-center h-screen w-screen  spacemono">
       <Waves />
-      <div className="h-[400px] w-[330px] md:h-[500px] md:w-[400px] flex justify-center items-center  rounded-md z-50 glass shadow-2xl">
+      <div className="h-[400px] w-[330px] md:h-[500px] md:w-[400px] flex justify-center items-center  rounded-md z-50 glass shadow-2xl border">
         <form className="flex flex-col gap-8 md:h-[450px] md:w-[350px] w-[310px] h-[380px] p-2" onSubmit={handleSubmit}>
           <Input
             type="email"

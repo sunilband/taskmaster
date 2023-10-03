@@ -1,13 +1,15 @@
 import { NextResponse } from "next/server";
 import { UserModel } from "@/utils/backend/userModel";
 import { connectDB } from "@/utils/backend/mongoDB";
-import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { cookies } from "next/headers";
+import { headers } from 'next/headers'
 
-export async function POST(req, res) {
+export async function GET(req, res) {
   try {
-    const { taskmastertoken } = await req.json();
+
+    const headersInstance = headers()
+  const taskmastertoken = headersInstance.get('authorization').split('Bearer ')[1]
+  
 
     if (!taskmastertoken)
       return new NextResponse(
@@ -36,10 +38,11 @@ export async function POST(req, res) {
         }
       );
 
+     
     return new NextResponse(
       JSON.stringify({
         success: true,
-        message: "Welcome back " + user.name + "! ",
+        message: "Welcome back " + user.name + " ! ",
         user: {
           name: user.name,
           email: user.email,
