@@ -82,7 +82,7 @@ const UpdateModal = ({ onOpenUpdate, isOpenUpdate, onOpenChangeUpdate,data,refre
               </ModalHeader>
               <ModalBody>
                 <Input
-                  autoFocus
+                  
                   label="Task"
                   variant="bordered"
                   type="text"

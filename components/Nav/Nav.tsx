@@ -62,7 +62,7 @@ const Nav = (props: Props) => {
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           className="sm:hidden"
         /> */}
-        <NavbarBrand>
+        <NavbarBrand >
           <AcmeLogo />
           <p className="font-bold text-inherit">TASKMASTER</p>
         </NavbarBrand>
@@ -118,7 +118,7 @@ const Nav = (props: Props) => {
           />
         </Tooltip>:null}
         {path == "/signup" ? (
-          <NavbarItem className="hidden lg:flex">
+          <NavbarItem >
             <Button as={Link} color="primary" href="/login" variant="flat">
               Login
             </Button>
@@ -145,7 +145,7 @@ const Nav = (props: Props) => {
         ) : null}
         
       </NavbarContent>
-      <NavbarMenu>
+      {/* <NavbarMenu>
         {menuItems.map((item, index) => (
           <NavbarMenuItem key={`${item}-${index}`}>
             <Link
@@ -164,7 +164,7 @@ const Nav = (props: Props) => {
             </Link>
           </NavbarMenuItem>
         ))}
-      </NavbarMenu>
+      </NavbarMenu> */}
     </Navbar>
   );
 };

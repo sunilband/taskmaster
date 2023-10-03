@@ -6,7 +6,7 @@
 .glass {
   /* background: rgba(255, 255, 255, 0.078); */
   background: rgba(101, 101, 101, 0.078);
-  backdrop-filter: blur(2px);
+  backdrop-filter: blur(5px);
   z-index: 0;
 }
 

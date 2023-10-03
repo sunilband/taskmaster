@@ -73,7 +73,7 @@ const InsertModal = ({ onOpen, isOpen, onOpenChange,refresh,setRefresh }: Props)
               </ModalHeader>
               <ModalBody>
                 <Input
-                  autoFocus
+               
                   label="Task"
                   variant="bordered"
                   type="text"
