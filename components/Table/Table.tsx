@@ -354,25 +354,26 @@ export default function App() {
             />
           </motion.div>
 
-          <div className="flex gap-3">
+          <motion.div 
+          initial={{
+            scale: 0,
+            x: -100,
+            // y: -300,
+          }}
+          animate={{
+            scale: 1,
+            x: 0,
+            // y: 0,
+          }}
+          transition={{
+            type: "spring",
+            duration: 2,
+            delay: 0.5,
+          }}
+          viewport={{ once: true }}
+          className="flex gap-3">
             <Dropdown>
-              <motion.DropdownTrigger
-                initial={{
-                  scale: 0,
-                  x: -100,
-                  y: -300,
-                }}
-                animate={{
-                  scale: 1,
-                  x: 0,
-                  y: 0,
-                }}
-                transition={{
-                  type: "spring",
-                  duration: 2,
-                  delay: 0.5,
-                }}
-                viewport={{ once: true }}
+              <DropdownTrigger
                 className="hidden sm:flex"
               >
                 <Button
@@ -381,7 +382,7 @@ export default function App() {
                 >
                   Status
                 </Button>
-              </motion.DropdownTrigger>
+              </DropdownTrigger>
               <DropdownMenu
                 disallowEmptySelection
                 aria-label="Table Columns"
@@ -399,22 +400,7 @@ export default function App() {
             </Dropdown>
 
             <Dropdown>
-              <motion.DropdownTrigger
-                initial={{
-                  scale: 0,
-                  x: -100,
-                  y: -300,
-                }}
-                animate={{
-                  scale: 1,
-                  x: 0,
-                  y: 0,
-                }}
-                transition={{
-                  type: "spring",
-                  duration: 2,
-                  delay: 0.5,
-                }}
+              <DropdownTrigger
                 viewport={{ once: true }}
                 className="hidden sm:flex"
               >
@@ -424,7 +410,7 @@ export default function App() {
                 >
                   Priority
                 </Button>
-              </motion.DropdownTrigger>
+              </DropdownTrigger>
               <DropdownMenu
                 disallowEmptySelection
                 aria-label="Table Columns"
@@ -441,23 +427,8 @@ export default function App() {
               </DropdownMenu>
             </Dropdown>
             <Dropdown>
-              <motion.DropdownTrigger
-                initial={{
-                  scale: 0,
-                  x: -100,
-                  y: -300,
-                }}
-                animate={{
-                  scale: 1,
-                  x: 0,
-                  y: 0,
-                }}
-                transition={{
-                  type: "spring",
-                  duration: 2,
-                  delay: 0.5,
-                }}
-                viewport={{ once: true }}
+              <DropdownTrigger
+                
                 className="hidden sm:flex"
               >
                 <Button
@@ -466,7 +437,7 @@ export default function App() {
                 >
                   Columns
                 </Button>
-              </motion.DropdownTrigger>
+              </DropdownTrigger>
               <DropdownMenu
                 disallowEmptySelection
                 aria-label="Table Columns"
@@ -516,7 +487,7 @@ export default function App() {
                 Add New
               </Button>
             </motion.div>
-          </div>
+          </motion.div>
         </div>
         <div className="flex justify-between items-center">
           <span className="text-default-400 text-small">
