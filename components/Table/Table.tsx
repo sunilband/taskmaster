@@ -1,3 +1,4 @@
+// @ts-ignore
 "use client";
 import React from "react";
 import { useEffect, useState } from "react";
@@ -40,10 +41,12 @@ import { UpArrow } from "./UpArrow";
 import InsertModal from "../InsertModal/InsertModal";
 import UpdateModal from "../UpdateModal/UpdateModal";
 import ViewModel from "../ViewModel/ViewModel";
+import DeleteModel from "../DeleteModal/DeleteModal";
 import { useDisclosure } from "@nextui-org/react";
 import { useTaskContext } from "@/context/taskContext";
 import { gettasks } from "@/utils/apiCalls/GetTasks";
 import { dateParser, timeParser } from "@/utils/utils";
+import { deletetask } from "@/utils/apiCalls/DeleteTask";
 
 const statusColorMap = {
   Active: "warning",
@@ -62,14 +65,20 @@ const INITIAL_VISIBLE_COLUMNS = [
 ];
 
 export default function App() {
+  const { user, setUser } = useUserContext();
+  const router = useRouter();
+  const [token, setToken] = useState("")
+  // 
   const [tasks, setTasks] = useState([]);
   const [refresh, setRefresh] = useState(false);
   const [updateButtonClick, setUpdateButtonClick] = useState(false);
   const [viewButtonClick, setViewButtonClick] = useState(false);
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [addButtonCliked, setAddButtonCliked] = useState(false);
+  const [deleteButtonCliked, setDeleteButtonCliked] = useState(false);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [updateData, setUpdateData] = useState({});
   const [viewData, setViewData] = useState({});
+  const [deleteData, setDeleteData] = useState({});
   const [filterValue, setFilterValue] = React.useState("");
   const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
   const [visibleColumns, setVisibleColumns] = React.useState(
@@ -144,32 +153,32 @@ export default function App() {
     });
   }, [sortDescriptor, items]);
 
-  const renderCell = React.useCallback((user, columnKey) => {
-    const cellValue = user[columnKey];
+  const renderCell = React.useCallback((tuple, columnKey) => {
+    const cellValue = tuple[columnKey];
 
     switch (columnKey) {
       case "task":
         // return task length >10 then add ... at the end and shorten to 10 length
-        return user.task.length > 20
-          ? user.task.substring(0, 20) + "..."
-          : user.task;
+        return tuple.task.length > 20
+          ? tuple.task.substring(0, 20) + "..."
+          : tuple.task;
 
       case "desc":
-        return user.desc.length > 20
-          ? user.desc.substring(0, 20) + "..."
-          : user.desc;
+        return tuple.desc.length > 20
+          ? tuple.desc.substring(0, 20) + "..."
+          : tuple.desc;
       case "createdAt":
         return (
           <div className="flex flex-col">
-            <p>{dateParser(user.createdAt)}</p>
-            <p className="text-[10px]">{timeParser(user.createdAt)}</p>
+            <p>{dateParser(tuple.createdAt)}</p>
+            <p className="text-[10px]">{timeParser(tuple.createdAt)}</p>
           </div>
         );
       case "updatedAt":
-        return user.createdAt != user.updatedAt ? (
+        return tuple.createdAt != tuple.updatedAt ? (
           <div className="flex flex-col">
-            <p>{dateParser(user.updatedAt)}</p>
-            <p className="text-[10px]">{timeParser(user.updatedAt)}</p>
+            <p>{dateParser(tuple.updatedAt)}</p>
+            <p className="text-[10px]">{timeParser(tuple.updatedAt)}</p>
           </div>
         ) : (
           <p className="text-blue-500">Never</p>
@@ -201,7 +210,7 @@ export default function App() {
           </Chip>
         ) : null;
 
-      //   <Chip className="capitalize" color={statusColorMap[user.status]} size="sm" variant="flat">
+      //   <Chip className="capitalize" color={statusColorMap[tuple.status]} size="sm" variant="flat">
       //     {cellValue}
       //   </Chip>
       case "priority":
@@ -235,8 +244,9 @@ export default function App() {
                     e.stopPropagation();
                     setUpdateButtonClick(false);
                     setAddButtonCliked(false);
+                    setDeleteButtonCliked(false);
                     setViewButtonClick(true);
-                    setViewData(user);
+                    setViewData(tuple);
                     onOpen();
                   }}
                 />
@@ -249,8 +259,9 @@ export default function App() {
                     e.stopPropagation();
                     setViewButtonClick(false);
                     setAddButtonCliked(false);
+                    setDeleteButtonCliked(false);
                     setUpdateButtonClick(true);
-                    setUpdateData(user);
+                    setUpdateData(tuple);
                     onOpen();
                   }}
                 />
@@ -258,7 +269,16 @@ export default function App() {
             </Tooltip>
             <Tooltip color="danger" content="Delete task">
               <span className="text-lg text-danger cursor-pointer active:opacity-50">
-                <DeleteIcon />
+                <DeleteIcon
+                  onClick={() => {
+                    setViewButtonClick(false);
+                    setUpdateButtonClick(false);
+                    setAddButtonCliked(false);
+                    setDeleteButtonCliked(true);
+                    setDeleteData(tuple);
+                    onOpen();
+                  }}
+                />
               </span>
             </Tooltip>
           </div>
@@ -392,6 +412,7 @@ export default function App() {
               onPress={() => {
                 setViewButtonClick(false);
                 setUpdateButtonClick(false);
+                setDeleteButtonCliked(false);
                 setAddButtonCliked(true);
                 onOpen();
               }}
@@ -471,14 +492,13 @@ export default function App() {
     );
   }, [selectedKeys, items.length, page, pages, hasSearchFilter]);
 
-  const { user, setUser } = useUserContext();
-  const router = useRouter();
-
+  
   useEffect(() => {
     const taskmastertoken = cookieCutter.get("taskmastertoken");
     if (taskmastertoken) {
       getuser(taskmastertoken).then((res) => {
         setUser(res.user);
+        setToken(res.user.token)
       });
     } else {
       router.push("/login");
@@ -495,6 +515,8 @@ export default function App() {
         }
       });
   }, [refresh, user.token]);
+
+ 
 
   return (
     <div className="h-screen w-screen flex justify-center items-center px-4">
@@ -529,6 +551,17 @@ export default function App() {
           setRefresh={setRefresh}
         />
       ) : null}
+
+      {deleteButtonCliked ? (
+        <DeleteModel
+        isOpenUpdate={isOpen}
+        onOpenChangeUpdate={onOpenChange}
+        onOpenUpdate={onOpen}
+        data={deleteData}
+        refresh={refresh}
+        setRefresh={setRefresh}
+        />
+      ) : null}
       <Table
         aria-label="Example table with custom cells, pagination and sorting"
         isHeaderSticky
@@ -559,13 +592,16 @@ export default function App() {
         </TableHeader>
         <TableBody emptyContent={"No tasks found"} items={sortedItems}>
           {(item) => (
-            <TableRow key={item.id} onDoubleClick={()=>{
-              setViewButtonClick(true);
-              setUpdateButtonClick(false);
-              setAddButtonCliked(false);
-              setViewData(item);
-              onOpen();
-            }}>
+            <TableRow
+              key={item.id}
+              onDoubleClick={() => {
+                setUpdateButtonClick(false);
+                setAddButtonCliked(false);
+                setViewButtonClick(true);
+                setViewData(item);
+                onOpen();
+              }}
+            >
               {(columnKey) => (
                 <TableCell>{renderCell(item, columnKey)}</TableCell>
               )}

@@ -5,13 +5,13 @@ import jwt from "jsonwebtoken";
 import { headers } from 'next/headers'
 import { TaskModel } from "@/utils/backend/taskModel";
 
-export async function PUT(req, res) {
+export async function DELETE(req, res) {
   try {
 
   const headersInstance = headers()
   const taskmastertoken = headersInstance.get('authorization').split('Bearer ')[1]
   
-
+console.log("this is token",taskmastertoken)
     if (!taskmastertoken)
       return new NextResponse(
         JSON.stringify({
@@ -22,8 +22,17 @@ export async function PUT(req, res) {
           status: 400,
         }
       );
-    const data = await req.json();
-    
+    const { id } = await req.json();
+    if (!id)
+      return new NextResponse(
+        JSON.stringify({
+          success: false,
+          error: "Incomplete data",
+        }),
+        {
+          status: 400,
+        }
+      );
     await connectDB();
     const token=taskmastertoken;
     const verified = jwt.verify(token, process.env.NEXT_PUBLIC_JWT_SECRET);
@@ -40,7 +49,6 @@ export async function PUT(req, res) {
         );
     }
     let user = await UserModel.findById(verified.id);
-
     if (!user)
       return new NextResponse(
         JSON.stringify({
@@ -51,28 +59,29 @@ export async function PUT(req, res) {
           status: 400,
         }
       );
-      const task= await TaskModel.findById(data.id);
-      if(task.user.toString()!==user._id.toString())
-        {
-            return new NextResponse(
-                JSON.stringify({
-                success: false,
-                error: "Not authorized",
-                }),
-                {
-                status: 400,
-                }
-            );
-        }
-      const updatedtask = await TaskModel.findByIdAndUpdate(data.id,data, {new: true});
       
+    //   const deletedTask= await TaskModel.findByIdAndDelete(id)
+    // delete a task where _id = id and user = user._id
+    const deletedTask= await TaskModel.findOneAndDelete({_id:id,user:user._id})
+    if(!deletedTask)
+    {
+        return new NextResponse(
+            JSON.stringify({
+            success: false,
+            error: "Task not found",
+            }),
+            {
+            status: 400,
+            }
+        );
+    }
 
      
     return new NextResponse(
       JSON.stringify({
         success: true,
-        message: "Task updated !",
-        data:updatedtask
+        message: "Task Deleted!",
+        data:deletedTask
       }),
       {
         status: 200,
