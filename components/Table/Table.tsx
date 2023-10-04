@@ -662,6 +662,7 @@ export default function App() {
               onDoubleClick={() => {
                 setUpdateButtonClick(false);
                 setAddButtonCliked(false);
+                setDeleteButtonCliked(false);
                 setViewButtonClick(true);
                 setViewData(item);
                 onOpen();
