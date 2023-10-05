@@ -70,7 +70,7 @@ export default function App() {
   const router = useRouter();
   const [token, setToken] = useState("");
   //
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState<>([]);
   const [refresh, setRefresh] = useState(false);
   const [updateButtonClick, setUpdateButtonClick] = useState(false);
   const [viewButtonClick, setViewButtonClick] = useState(false);
@@ -587,6 +587,7 @@ export default function App() {
       });
   }, [refresh, user.token]);
 
+
   return (
     <div className="h-screen w-screen flex justify-center items-center px-4">
       {addButtonCliked ? (
@@ -647,6 +648,7 @@ export default function App() {
         topContentPlacement="outside"
         onSelectionChange={setSelectedKeys}
         onSortChange={setSortDescriptor}
+        isLoading
       >
         <TableHeader columns={headerColumns}>
           {(column) => (

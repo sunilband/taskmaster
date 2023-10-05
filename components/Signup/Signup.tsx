@@ -94,8 +94,25 @@ const Signup = (props: Props) => {
         duration: 1,
       }}
       viewport={{ once: true }}
-      className="h-[500px] w-[330px] md:h-[500px] md:w-[400px] flex justify-center items-center  rounded-md z-50 glass shadow-2xl border">
+      className="h-[500px] w-[330px] md:h-[500px] md:w-[400px] flex justify-center items-center  rounded-md z-50 glass shadow-2xl border relative">
         <div className="flex flex-col gap-8 md:h-[450px] md:w-[350px] w-[310px] h-[380px] p-2">
+        <motion.label
+         initial={{
+          scale: 0,
+          z: -300,
+        }}
+        animate={{
+          scale: 1,
+          z: 0,
+        }}
+        transition={{
+          type: "spring",
+          duration: 1,
+          delay:0.5
+        }}
+        className="font-semibold text-lg absolute -top-4 bg-white text-[#9C2CF3] px-2 rounded-md tracking-[7px] spacemono uppercase "
+          style={{color:"#9C2CF3 !important"}}
+          >Signup</motion.label>
           <Input
             type="text"
             variant="underlined"
@@ -147,9 +164,14 @@ const Signup = (props: Props) => {
             >
               Sign up
             </Button>
-            <p className="text-medium">OR</p>
+            <div className="relative mt-3  w-full">
+            <div className="border-b w-[100px] absolute -left-5"/>
+            <div className="border-b w-[100px] absolute -right-5"/>
+            <p className="text-medium absolute -top-3 left-0 right-0 text-white text-opacity-80">OR</p>
+            </div>
+            
             <Link href="/login">
-              <p className="text-medium tracking-wider transition-all delay-100 duration-200 ease-in-out  hover:underline font-semibold">
+              <p className="text-medium tracking-wider transition-all delay-100 duration-200 ease-in-out  hover:underline font-semibold text-white text-opacity-80">
                 Already have an account?
               </p>
             </Link>

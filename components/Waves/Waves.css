@@ -20,9 +20,13 @@ p {
   text-align: center;
   background: linear-gradient(
     60deg,
-    rgba(84, 58, 183, 1) 0%,
-    rgba(0, 172, 193, 1) 100%
+    /* rgba(84, 58, 183, 1) 0%, */
+    #9C2CF3 0%,
+    /* rgba(0, 172, 193, 1) 100% */
+    #3A49F9 100%
   );
+  /* background: var(--gredient, linear-gradient(177deg, #9C2CF3 -13.49%, #3A49F9 109.75%)); */
+
   color: white;
 }
 .logo {
