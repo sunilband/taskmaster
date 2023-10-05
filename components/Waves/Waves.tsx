@@ -6,7 +6,7 @@ type Props = {}
 const Waves = (props: Props) => {
   return (
     
-<div className='max-h-screen w-screen absolute -z-0 overflow-hidden'>
+<div className='max-h-screen max-w-screen h-screen w-screen absolute -z-0 overflow-hidden'>
   {/*Hey! This is the original version
 of Simple CSS Waves*/}
   <div className="header">
@@ -55,10 +55,7 @@ of Simple CSS Waves*/}
     </div>
     {/*Waves end*/}
   </div>
-  {/*Header ends*/}
-  {/*Content starts*/}
 
-  {/*Content ends*/}
 </div>
     
     

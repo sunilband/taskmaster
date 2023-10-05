@@ -54,7 +54,7 @@ const Nav = (props: Props) => {
     <Navbar
       onMenuOpenChange={setIsMenuOpen}
       shouldHideOnScroll
-      className="fixed h-20 bg-white bg-opacity-70"
+      className="fixed h-20 bg-white  bg-opacity-70 "
     >
       <NavbarContent>
         
@@ -86,7 +86,7 @@ const Nav = (props: Props) => {
         </NavbarItem>
       </NavbarContent> */}
       <NavbarContent justify="end">
-      {user.token?<Tooltip
+      {path=="/"?<Tooltip
           content={user.name}
           className="p-2 mt-1 border bg-[#7828C8] text-white tracking-widest rounded-full px-3"
           motionProps={{
@@ -117,7 +117,7 @@ const Nav = (props: Props) => {
             size="md"
           />
         </Tooltip>:null}
-        {path == "/signup" ? (
+        {(path == "/signup" || path == "/") && !user.token  ? (
           <NavbarItem >
             <Button as={Link} color="primary" href="/login" variant="flat">
               Login

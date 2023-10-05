@@ -79,7 +79,7 @@ const Login = (props: Props) => {
       viewport={{ once: true }}
       className="h-[400px] w-[330px] md:h-[500px] md:w-[400px] flex justify-center items-center  rounded-md z-50 glass shadow-2xl border relative">
         <form className="flex flex-col gap-8 md:h-[450px] md:w-[350px] w-[310px] h-[380px] p-2" onSubmit={handleSubmit}>
-          <motion.label
+          <motion.p
           initial={{
             scale: 0,
             z: -300,
@@ -95,7 +95,7 @@ const Login = (props: Props) => {
           }}
           className="font-semibold text-lg absolute -top-4 bg-white text-[#9C2CF3] px-2 rounded-md tracking-[7px] spacemono uppercase "
           style={{color:"#9C2CF3 !important"}}
-          >Login</motion.label>
+          >Login</motion.p>
           <Input
             type="email"
             variant="underlined"
