@@ -637,7 +637,7 @@ export default function App() {
         bottomContent={bottomContent}
         bottomContentPlacement="outside"
         classNames={{
-          wrapper: "max-h-[382px] shadow-xl bg-opacity-70",
+          wrapper: "max-h-[382px] shadow-xl bg-opacity-70 ",
         }}
         selectedKeys={selectedKeys}
         selectionMode="single"

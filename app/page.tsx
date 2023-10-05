@@ -5,7 +5,7 @@ import Table from "@/components/Table/Table";
 import {motion} from "framer-motion";
 export default function Home() {
   return (
-    <div className="overflow-clip">
+    <div className="overflow-clip max-h-screen">
       <div className="absolute z-0 overflow-hidden">
 
       <BG />

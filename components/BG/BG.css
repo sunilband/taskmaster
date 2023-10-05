@@ -1,6 +1,7 @@
 .bg{
     width: 100vw;
     height: 100vh;
+    max-height: 100vh !important;
     opacity: 0.6;
 background: var(--gredient, linear-gradient(177deg, #9C2CF3 -13.49%, #3A49F9 109.75%));
 }

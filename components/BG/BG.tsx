@@ -12,7 +12,7 @@ const BG = (props: Props) => {
         viewBox="0 0 871 458"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        className="z-10 absolute right-0 -right-60 -top-20 sm:scale-100 scale-50"
+        className="z-10 absolute  -right-60 -top-20 sm:scale-100 scale-50"
       >
         <ellipse
           opacity="0.1"
