@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
@@ -20,37 +20,52 @@ type Props = {
   onOpen: any;
   isOpen: any;
   onOpenChange: any;
-  refresh:any;
-    setRefresh:any;
+  refresh: any;
+  setRefresh: any;
 };
-const InsertModal = ({ onOpen, isOpen, onOpenChange,refresh,setRefresh }: Props) => {
+const InsertModal = ({
+  onOpen,
+  isOpen,
+  onOpenChange,
+  refresh,
+  setRefresh,
+}: Props) => {
+  const [disabled, setDisabled] = useState(false);
   const { user } = useUserContext();
   const [task, setTask] = useState("");
   const [desc, setDesc] = useState("");
   const [priority, setPriority] = useState("");
   const [status, setStatus] = useState("");
+
+ 
   const handleAddTask = () => {
     try {
+      setDisabled(true);
       createTask(
         { task, desc, priority, status },
         user.token ? user.token : ""
       ).then((res) => {
         if (task === "" || desc === "" || priority === "" || status === "") {
+          setDisabled(false);
           return toast.error("Please fill all the fields");
         }
         if (res.error) {
           toast.error(res.error);
+          setDisabled(false);
         } else {
+          setDisabled(true);
           toast.success("Task Added !");
+          setDisabled(false)
           setTask("");
           setDesc("");
           setPriority("");
           setStatus("");
           onOpenChange(false);
-          setRefresh(!refresh)
+          setRefresh(!refresh);
         }
       });
     } catch (error) {
+      setDisabled(false);
       console.log(error);
     }
   };
@@ -63,7 +78,7 @@ const InsertModal = ({ onOpen, isOpen, onOpenChange,refresh,setRefresh }: Props)
         isOpen={isOpen}
         onOpenChange={onOpenChange}
         placement="center"
-        className="mx-4"    
+        className="mx-4"
       >
         <ModalContent>
           {(onClose) => (
@@ -73,7 +88,6 @@ const InsertModal = ({ onOpen, isOpen, onOpenChange,refresh,setRefresh }: Props)
               </ModalHeader>
               <ModalBody>
                 <Input
-               
                   label="Task"
                   variant="bordered"
                   type="text"
@@ -130,7 +144,11 @@ const InsertModal = ({ onOpen, isOpen, onOpenChange,refresh,setRefresh }: Props)
                 </Select>
               </ModalBody>
               <ModalFooter>
-                <Button color="primary" onPress={handleAddTask}>
+                <Button
+                  color="primary"
+                  onPress={handleAddTask}
+                  isDisabled={disabled}
+                >
                   Add
                 </Button>
               </ModalFooter>

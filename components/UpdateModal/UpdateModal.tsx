@@ -25,6 +25,7 @@ type Props = {
   setRefresh:any;
 };
 const UpdateModal = ({ onOpenUpdate, isOpenUpdate, onOpenChangeUpdate,data,refresh,setRefresh }: Props) => {
+  const [disabled,setDisabled]=useState(false)
   const { user } = useUserContext();
   const [task, setTask] = useState("");
   const [desc, setDesc] = useState("");
@@ -40,17 +41,22 @@ const UpdateModal = ({ onOpenUpdate, isOpenUpdate, onOpenChangeUpdate,data,refre
 
   const handleAddTask = () => {
     try {
+      setDisabled(true)
       updatetask(
         { task, desc, priority, status ,id:data.id },
         user.token ? user.token : ""
       ).then((res) => {
         if (task === "" || desc === "" || priority === "" || status === "") {
+          setDisabled(false)
           return toast.error("Please fill all the fields");
         }
         if (res.error) {
+          setDisabled(false)
           toast.error(res.error);
         } else {
+          setDisabled(true)
           toast.success(res.message);
+          setDisabled(false)
           setRefresh(!refresh)
           setTask("");
           setDesc("");
@@ -60,6 +66,7 @@ const UpdateModal = ({ onOpenUpdate, isOpenUpdate, onOpenChangeUpdate,data,refre
         }
       });
     } catch (error) {
+      setDisabled(false)
       console.log(error);
     }
   };
@@ -140,7 +147,9 @@ const UpdateModal = ({ onOpenUpdate, isOpenUpdate, onOpenChangeUpdate,data,refre
                 </Select>
               </ModalBody>
               <ModalFooter>
-                <Button color="warning" onPress={handleAddTask}>
+                <Button color="warning" onPress={handleAddTask}
+                isDisabled={disabled}
+                >
                   Update
                 </Button>
               </ModalFooter>

@@ -54,7 +54,7 @@ const Nav = (props: Props) => {
     <Navbar
       onMenuOpenChange={setIsMenuOpen}
       shouldHideOnScroll
-      className="fixed h-20 bg-white"
+      className="fixed h-20 bg-white bg-opacity-70"
     >
       <NavbarContent>
         

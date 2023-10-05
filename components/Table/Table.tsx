@@ -378,7 +378,8 @@ export default function App() {
               >
                 <Button
                   endContent={<ChevronDownIcon className="text-small" />}
-                  variant="flat"
+                  variant="solid"
+                  color="secondary"
                 >
                   Status
                 </Button>
@@ -406,7 +407,8 @@ export default function App() {
               >
                 <Button
                   endContent={<ChevronDownIcon className="text-small" />}
-                  variant="flat"
+                  variant="solid"
+                  color="secondary"
                 >
                   Priority
                 </Button>
@@ -433,7 +435,9 @@ export default function App() {
               >
                 <Button
                   endContent={<ChevronDownIcon className="text-small" />}
-                  variant="flat"
+                  variant="solid"
+                  color="secondary"
+
                 >
                   Columns
                 </Button>
@@ -490,21 +494,21 @@ export default function App() {
           </motion.div>
         </div>
         <div className="flex justify-between items-center">
-          <span className="text-default-400 text-small">
-            Total {tasks.length} tasks
+          <span className="text-default-400 text-small text-white">
+            Total <span className="font-semibold">{tasks.length}</span> tasks
           </span>
           <label
-            className="flex items-center text-default-400 text-small mx-2"
-            style={{ color: "#A1A1AA !important" }}
+            className="flex items-center text-default-400 text-small mx-2 text-white"
+            // style={{ color: "#A1A1AA !important" }}
           >
             Rows per page:
             <select
-              className="bg-transparent outline-none text-default-400 text-small border rounded px-2 ml-2"
+              className="bg-transparent outline-none text-default-400 text-small  ml-2 text-white font-semibold"
               onChange={onRowsPerPageChange}
             >
-              <option value="5">5</option>
-              <option value="10">10</option>
-              <option value="15">15</option>
+              <option value="5" className="text-black">5</option>
+              <option value="10" className="text-black">10</option>
+              <option value="15" className="text-black">15</option>
             </select>
           </label>
         </div>
@@ -633,7 +637,7 @@ export default function App() {
         bottomContent={bottomContent}
         bottomContentPlacement="outside"
         classNames={{
-          wrapper: "max-h-[382px] shadow-lg",
+          wrapper: "max-h-[382px] shadow-xl bg-opacity-70",
         }}
         selectedKeys={selectedKeys}
         selectionMode="single"
