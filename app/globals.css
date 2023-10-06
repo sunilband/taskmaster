@@ -55,6 +55,13 @@
   z-index: -1;
 }
 
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active  {
+  transition: background-color 5000s;
+  -webkit-text-fill-color: #fff !important;
+}
 @keyframes gradient {
   0% {
     background-position: 0% 50%;

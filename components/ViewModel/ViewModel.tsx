@@ -50,7 +50,7 @@ const ViewModel = ({
     navigator.clipboard
       .writeText(data.desc)
       .then(() => {
-        // toast.info("Copied to clipboard");
+
         toast.info("Copied to clipboard", {
           position: "top-right",
           autoClose: 1000,
@@ -66,9 +66,10 @@ const ViewModel = ({
       });
   };
 
+  
+
   return (
     <>
-      {/* <Button onPress={onOpen} color="primary">Open Modal</Button> */}
       <Modal
         backdrop={"blur"}
         isOpen={isOpenView}
