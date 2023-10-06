@@ -322,8 +322,8 @@ export default function App() {
 
   const topContent = React.useMemo(() => {
     return (
-      <div className="flex flex-col gap-4">
-        <div className="flex justify-between gap-3 items-end">
+      <div className="flex flex-col gap-4 mt-5">
+        <div className="flex sm:flex-row flex-col sm:justify-between items-center gap-3 ">
           <motion.div
             initial={{
               scale: 0,
@@ -341,11 +341,11 @@ export default function App() {
               delay: 0.5,
             }}
             viewport={{ once: true }}
-            className="w-full"
+            className="w-full "
           >
             <Input
               isClearable
-              className="w-full sm:max-w-[44%]"
+              className="w-full sm:max-w-[400px]"
               placeholder="Search..."
               startContent={<SearchIcon />}
               value={filterValue}
@@ -354,28 +354,27 @@ export default function App() {
             />
           </motion.div>
 
-          <motion.div 
-          initial={{
-            scale: 0,
-            x: -100,
-            // y: -300,
-          }}
-          animate={{
-            scale: 1,
-            x: 0,
-            // y: 0,
-          }}
-          transition={{
-            type: "spring",
-            duration: 2,
-            delay: 0.5,
-          }}
-          viewport={{ once: true }}
-          className="flex gap-3">
+          <motion.div
+            initial={{
+              scale: 0,
+              x: -100,
+              // y: -300,
+            }}
+            animate={{
+              scale: 1,
+              x: 0,
+              // y: 0,
+            }}
+            transition={{
+              type: "spring",
+              duration: 2,
+              delay: 0.5,
+            }}
+            viewport={{ once: true }}
+            className="flex flex-wrap justify-center sm:justify-end sm:w-[200vw] gap-3"
+          >
             <Dropdown>
-              <DropdownTrigger
-                className="hidden sm:flex"
-              >
+              <DropdownTrigger className="sm:flex">
                 <Button
                   endContent={<ChevronDownIcon className="text-small" />}
                   variant="solid"
@@ -403,7 +402,7 @@ export default function App() {
             <Dropdown>
               <DropdownTrigger
                 viewport={{ once: true }}
-                className="hidden sm:flex"
+                className=" sm:flex"
               >
                 <Button
                   endContent={<ChevronDownIcon className="text-small" />}
@@ -429,15 +428,11 @@ export default function App() {
               </DropdownMenu>
             </Dropdown>
             <Dropdown>
-              <DropdownTrigger
-                
-                className="hidden sm:flex"
-              >
+              <DropdownTrigger className=" sm:flex">
                 <Button
                   endContent={<ChevronDownIcon className="text-small" />}
                   variant="solid"
                   color="secondary"
-
                 >
                   Columns
                 </Button>
@@ -506,9 +501,15 @@ export default function App() {
               className="bg-transparent outline-none text-default-400 text-small  ml-2 text-white font-semibold"
               onChange={onRowsPerPageChange}
             >
-              <option value="5" className="text-black">5</option>
-              <option value="10" className="text-black">10</option>
-              <option value="15" className="text-black">15</option>
+              <option value="5" className="text-black">
+                5
+              </option>
+              <option value="10" className="text-black">
+                10
+              </option>
+              <option value="15" className="text-black">
+                15
+              </option>
             </select>
           </label>
         </div>
@@ -542,7 +543,7 @@ export default function App() {
           total={pages}
           onChange={setPage}
         />
-        <div className="hidden sm:flex w-[30%] justify-end gap-2">
+        <div className="flex w-[30%] justify-end gap-2 ">
           <Button
             isDisabled={pages === 1}
             size="sm"
@@ -588,9 +589,8 @@ export default function App() {
   }, [refresh, user.token]);
 
   useEffect(() => {
-    if(user.token)
-   
-      toast.info("Welcome Back"+ " " + user.name + "!", {
+    if (user.token)
+      toast.success("Welcome Back" + " " + user.name + "!", {
         position: "bottom-right",
         autoClose: 2000,
         hideProgressBar: false,
@@ -599,7 +599,7 @@ export default function App() {
         theme: "light",
         transition: Flip,
       });
-}, [user.token]);
+  }, [user.token]);
 
   return (
     <div className="h-screen w-screen flex justify-center items-center px-4">
@@ -688,24 +688,24 @@ export default function App() {
               }}
             >
               {(columnKey) => (
-                <TableCell><motion.div
-                initial={{
-                  // scale: 0,
-                  x: -100,
-                }}
-                animate={{
-                  // scale: 1,
-                  x: 0,
-                }}
-                transition={{
-                  type: "spring",
-                  duration: 1,
-                }}
-                viewport={{ once: true }}
-                >
-
-                {renderCell(item, columnKey)}
-                </motion.div>
+                <TableCell>
+                  <motion.div
+                    initial={{
+                      // scale: 0,
+                      x: -100,
+                    }}
+                    animate={{
+                      // scale: 1,
+                      x: 0,
+                    }}
+                    transition={{
+                      type: "spring",
+                      duration: 1,
+                    }}
+                    viewport={{ once: true }}
+                  >
+                    {renderCell(item, columnKey)}
+                  </motion.div>
                 </TableCell>
               )}
             </TableRow>
