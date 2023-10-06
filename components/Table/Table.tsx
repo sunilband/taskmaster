@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useUserContext } from "@/context/userContexts";
 import { getuser } from "@/utils/apiCalls/GetUser";
 import { useRouter } from "next/navigation";
-import { toast } from "react-toastify";
+import { Flip, toast } from "react-toastify";
 import { motion } from "framer-motion";
 const cookieCutter = require("cookie-cutter");
 
@@ -587,6 +587,19 @@ export default function App() {
       });
   }, [refresh, user.token]);
 
+  useEffect(() => {
+    if(user.token)
+   
+      toast.info("Welcome Back"+ " " + user.name + "!", {
+        position: "bottom-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        theme: "light",
+        transition: Flip,
+      });
+}, [user.token]);
 
   return (
     <div className="h-screen w-screen flex justify-center items-center px-4">
