@@ -7,6 +7,8 @@ import { getuser } from "@/utils/apiCalls/GetUser";
 import { useRouter } from "next/navigation";
 import { Flip, toast } from "react-toastify";
 import { motion } from "framer-motion";
+
+import { useLongPress } from 'use-long-press';
 const cookieCutter = require("cookie-cutter");
 
 import {
@@ -601,6 +603,17 @@ export default function App() {
       });
   }, [user.token]);
 
+  const bind = useLongPress((data) => {
+    
+      setUpdateButtonClick(false);
+      setAddButtonCliked(false);
+      setDeleteButtonCliked(false);
+      setViewButtonClick(true);
+      setViewData(...data);
+      onOpen();
+    
+  });
+
   return (
     <div className="h-screen w-screen flex justify-center items-center px-4">
       {addButtonCliked ? (
@@ -686,6 +699,7 @@ export default function App() {
                 setViewData(item);
                 onOpen();
               }}
+              {...bind(item)}
             >
               {(columnKey) => (
                 <TableCell>

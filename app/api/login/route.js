@@ -24,9 +24,19 @@ export async function POST(req, res) {
     await connectDB();
     
     let user = await UserModel.findOne({ email }).select("+password");
+    if (!user)
+      return new NextResponse(
+        JSON.stringify({
+          success: false,
+          error: "Invalid credentials",
+        }),
+        {
+          status: 400,
+        }
+      );
     let decryptedPass=bcrypt.compareSync(password.toString(),user.password);
-   
-    if (!user || !decryptedPass)
+    
+    if (!decryptedPass)
       return new NextResponse(
         JSON.stringify({
           success: false,
