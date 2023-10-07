@@ -34,8 +34,8 @@ const Login = (props: Props) => {
       getuser(taskmastertoken).then((res) => {
         setUser(res.user);
       });
-      // router.push("/")
-      window.location.href = "/";
+      router.push("/")
+      // window.location.href = "/";
     }
   }, []);
 
