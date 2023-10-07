@@ -11,6 +11,7 @@ import {
   ModalFooter,
   Button,
   Input,
+  Textarea,
 } from "@nextui-org/react";
 import { Select, SelectItem } from "@nextui-org/react";
 import { createTask } from "@/utils/apiCalls/CreateTask";
@@ -37,7 +38,6 @@ const InsertModal = ({
   const [priority, setPriority] = useState("");
   const [status, setStatus] = useState("");
 
- 
   const handleAddTask = () => {
     try {
       setDisabled(true);
@@ -55,7 +55,7 @@ const InsertModal = ({
         } else {
           setDisabled(true);
           toast.success("Task Added !");
-          setDisabled(false)
+          setDisabled(false);
           setTask("");
           setDesc("");
           setPriority("");
@@ -96,7 +96,7 @@ const InsertModal = ({
                   }}
                   value={task}
                 />
-                <Input
+                <Textarea
                   label="Description"
                   type="text"
                   variant="bordered"

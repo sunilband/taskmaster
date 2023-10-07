@@ -11,6 +11,7 @@ import {
   ModalFooter,
   Button,
   Input,
+  Textarea,
 } from "@nextui-org/react";
 import { Select, SelectItem } from "@nextui-org/react";
 import { useUserContext } from "@/context/userContexts";
@@ -99,7 +100,7 @@ const UpdateModal = ({ onOpenUpdate, isOpenUpdate, onOpenChangeUpdate,data,refre
                   defaultValue={data.task}
                   
                 />
-                <Input
+                <Textarea
                   label="Description"
                   type="text"
                   variant="bordered"

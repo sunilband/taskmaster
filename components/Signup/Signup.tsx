@@ -110,8 +110,7 @@ const Signup = (props: Props) => {
           duration: 1,
           delay:0.5
         }}
-        className="font-semibold text-lg absolute -top-4 bg-white text-[#9C2CF3] px-2 rounded-md tracking-[7px] spacemono uppercase "
-          style={{color:"#9C2CF3 !important"}}
+        className="text-md absolute -top-3 bg-white text-[#9C2CF3] px-2 rounded-md tracking-[7px] font-thin border border-[#9C2CF3] uppercase "
           >Signup</motion.p>
           <Input
             type="text"
