@@ -108,6 +108,7 @@ const UpdateModal = ({ onOpenUpdate, isOpenUpdate, onOpenChangeUpdate,data,refre
                     setDesc(e.target.value);
                   }}
                   defaultValue={data.desc}
+                  style={{ whiteSpace: 'pre-wrap' }}
                 />
                 <Select
                   label="Priority"

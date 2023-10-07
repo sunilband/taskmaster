@@ -106,7 +106,7 @@ const ViewModel = ({
                       </button>
                     </div>
 
-                    <p>{data.desc}</p>
+                    <pre style={{ whiteSpace: 'pre-wrap' }}>{data.desc}</pre>
                     <Divider className="my-1" />
                   </div>
 

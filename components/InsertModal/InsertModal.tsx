@@ -104,6 +104,7 @@ const InsertModal = ({
                     setDesc(e.target.value);
                   }}
                   value={desc}
+                  style={{ whiteSpace: 'pre-wrap' }}
                 />
                 <Select
                   label="Priority"
