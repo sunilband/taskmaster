@@ -50,6 +50,12 @@ const Nav = (props: Props) => {
     setUser({ token: null, name: null, email: null });
     router.push("/login");
   };
+  const handleLoginRoute = () => {
+    router.push("/login");
+  }
+  const handleSignupRoute = () => {
+    router.push("/signup");
+  }
   return (
     <Navbar
       onMenuOpenChange={setIsMenuOpen}
@@ -118,18 +124,28 @@ const Nav = (props: Props) => {
           />
         </Tooltip>:null}
         {(path == "/signup" || path == "/") && !user.token  ? (
-          <NavbarItem >
-            <Button as={Link} color="primary" href="/login" variant="flat">
-              Login
-            </Button>
-          </NavbarItem>
+          <NavbarItem>
+          <Button
+            as={Link}
+            color="primary"
+            onClick={handleSignout}
+            variant="flat"
+          >
+            Login
+          </Button>
+        </NavbarItem>
         ) : null}
         {path == "/login" ? (
           <NavbarItem>
-            <Button as={Link} color="primary" href="/signup" variant="flat">
-              Sign Up
-            </Button>
-          </NavbarItem>
+          <Button
+            as={Link}
+            color="primary"
+            onClick={handleSignupRoute}
+            variant="flat"
+          >
+            Sign Up
+          </Button>
+        </NavbarItem>
         ) : null}
         {user.token ? (
           <NavbarItem>
