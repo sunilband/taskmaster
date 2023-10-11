@@ -41,6 +41,7 @@ export async function PUT(req, res) {
     }
     let user = await UserModel.findById(verified.id);
 
+
     if (!user)
       return new NextResponse(
         JSON.stringify({
@@ -51,7 +52,22 @@ export async function PUT(req, res) {
           status: 400,
         }
       );
+      console.log("id",data.id)
       const task= await TaskModel.findById(data.id);
+      
+      if(!task)
+      {
+        return new NextResponse(
+            JSON.stringify({
+            success: false,
+            error: "No task found",
+            }),
+            {
+            status: 400,
+            }
+        );
+      }
+
       if(task.user.toString()!==user._id.toString())
         {
             return new NextResponse(
@@ -79,6 +95,7 @@ export async function PUT(req, res) {
       }
     );
   } catch (error) {
+ 
     return new NextResponse(
       JSON.stringify({
         success: false,
