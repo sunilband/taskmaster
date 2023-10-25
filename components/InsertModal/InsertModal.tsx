@@ -114,7 +114,7 @@ const InsertModal = ({
                   theme="snow"
                   value={desc}
                   onChange={setDesc}
-                  className="h-[200px] sm:mb-[4.25rem] mb-[7.5rem]"
+                  className="h-[200px] sm:mb-[4.25rem] mb-[7.5rem] editor"
                   modules={{
                     toolbar: [
                       [{ header: [1, 2, false] }, { font: [] }],

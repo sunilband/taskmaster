@@ -30,10 +30,16 @@
 
 
 /* quill editor */
-.editor div{
-  border: 2px solid #ccc !important;
+.editor:first-child{
+  border: 2px solid #D0D0D0 !important;
   border-radius: 10px 10px 0 0 !important;
 }
+/* make one for second child */
+.editor:last-child{
+  border: 2px solid #D0D0D0 !important;
+  border-radius: 0 0 10px 10px !important;
+}
+
 .glass {
   /* background: rgba(255, 255, 255, 0.078); */
   background: rgba(101, 101, 101, 0.078);
