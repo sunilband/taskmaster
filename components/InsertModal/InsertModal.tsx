@@ -2,6 +2,8 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 import {
   Modal,
@@ -66,7 +68,6 @@ const InsertModal = ({
       });
     } catch (error) {
       setDisabled(false);
-      console.log(error);
     }
   };
 
@@ -96,7 +97,7 @@ const InsertModal = ({
                   }}
                   value={task}
                 />
-                <Textarea
+                {/* <Textarea
                   label="Description"
                   type="text"
                   variant="bordered"
@@ -105,7 +106,32 @@ const InsertModal = ({
                   }}
                   value={desc}
                   style={{ whiteSpace: 'pre-wrap' }}
+                /> */}
+
+                <ReactQuill
+                  theme="snow"
+                  value={desc}
+                  onChange={setDesc}
+                  className="h-[200px] sm:mb-[4.25rem] mb-[7.5rem]"
+                  modules={{
+                    toolbar: [
+                      [{ header: [1, 2, false] }, { font: [] }],
+                      ["bold", "italic", "underline", "strike"],
+                      ["blockquote", "code-block"],
+                      [
+                        { align: [] },
+                        { list: "ordered" },
+                        { list: "bullet" },
+                        {list: 'check'},
+                      ],
+                      ["link", { color: [] }, { background: [] },"clean"],
+                     
+                    ],
+                  }}
+                 placeholder="Description"
+                  style={{borderRadius: '0.5rem'}}
                 />
+
                 <Select
                   label="Priority"
                   variant="bordered"

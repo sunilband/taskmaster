@@ -52,7 +52,7 @@ export async function PUT(req, res) {
           status: 400,
         }
       );
-      console.log("id",data.id)
+   
       const task= await TaskModel.findById(data.id);
       
       if(!task)

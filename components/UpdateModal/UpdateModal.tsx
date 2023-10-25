@@ -2,6 +2,8 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 import {
   Modal,
@@ -22,11 +24,18 @@ type Props = {
   isOpenUpdate: any;
   onOpenChangeUpdate: any;
   data: any;
-  refresh:any;
-  setRefresh:any;
+  refresh: any;
+  setRefresh: any;
 };
-const UpdateModal = ({ onOpenUpdate, isOpenUpdate, onOpenChangeUpdate,data,refresh,setRefresh }: Props) => {
-  const [disabled,setDisabled]=useState(false)
+const UpdateModal = ({
+  onOpenUpdate,
+  isOpenUpdate,
+  onOpenChangeUpdate,
+  data,
+  refresh,
+  setRefresh,
+}: Props) => {
+  const [disabled, setDisabled] = useState(false);
   const { user } = useUserContext();
   const [task, setTask] = useState("");
   const [desc, setDesc] = useState("");
@@ -41,24 +50,34 @@ const UpdateModal = ({ onOpenUpdate, isOpenUpdate, onOpenChangeUpdate,data,refre
   }, [refresh]);
 
   const handleAddTask = () => {
+    // check if updated or values same
+    if (
+      task === data.task &&
+      desc === data.desc &&
+      priority === data.priority &&
+      status === data.status
+    ) {
+      return toast.info("No changes made");
+    }
+
     try {
-      setDisabled(true)
+      setDisabled(true);
       updatetask(
-        { task, desc, priority, status ,id:data.id },
+        { task, desc, priority, status, id: data.id },
         user.token ? user.token : ""
       ).then((res) => {
         if (task === "" || desc === "" || priority === "" || status === "") {
-          setDisabled(false)
+          setDisabled(false);
           return toast.error("Please fill all the fields");
         }
         if (res.error) {
-          setDisabled(false)
+          setDisabled(false);
           toast.error(res.error);
         } else {
-          setDisabled(true)
+          setDisabled(true);
           toast.success(res.message);
-          setDisabled(false)
-          setRefresh(!refresh)
+          setDisabled(false);
+          setRefresh(!refresh);
           setTask("");
           setDesc("");
           setPriority("");
@@ -67,14 +86,13 @@ const UpdateModal = ({ onOpenUpdate, isOpenUpdate, onOpenChangeUpdate,data,refre
         }
       });
     } catch (error) {
-      setDisabled(false)
+      setDisabled(false);
       console.log(error);
     }
   };
 
   return (
     <>
-      {/* <Button onPress={onOpen} color="primary">Open Modal</Button> */}
       <Modal
         backdrop={"blur"}
         isOpen={isOpenUpdate}
@@ -90,7 +108,6 @@ const UpdateModal = ({ onOpenUpdate, isOpenUpdate, onOpenChangeUpdate,data,refre
               </ModalHeader>
               <ModalBody>
                 <Input
-                  
                   label="Task"
                   variant="bordered"
                   type="text"
@@ -98,18 +115,30 @@ const UpdateModal = ({ onOpenUpdate, isOpenUpdate, onOpenChangeUpdate,data,refre
                     setTask(e.target.value);
                   }}
                   defaultValue={data.task}
-                  
                 />
-                <Textarea
-                  label="Description"
-                  type="text"
-                  variant="bordered"
-                  onChange={(e) => {
-                    setDesc(e.target.value);
-                  }}
+
+                <ReactQuill
                   defaultValue={data.desc}
-                  style={{ whiteSpace: 'pre-wrap' }}
+                  theme="snow"
+                  value={desc}
+                  onChange={setDesc}
+                  className="h-[200px] sm:mb-[4.25rem] mb-[7.5rem]"
+                  modules={{
+                    toolbar: [
+                      [{ header: [1, 2, false] }, { font: [] }],
+                      ["bold", "italic", "underline", "strike"],
+                      ["blockquote", "code-block"],
+                      [
+                        { align: [] },
+                        { list: "ordered" },
+                        { list: "bullet" },
+                        { list: "check" },
+                      ],
+                      ["link", { color: [] }, { background: [] }, "clean"],
+                    ],
+                  }}
                 />
+
                 <Select
                   label="Priority"
                   variant="bordered"
@@ -149,8 +178,10 @@ const UpdateModal = ({ onOpenUpdate, isOpenUpdate, onOpenChangeUpdate,data,refre
                 </Select>
               </ModalBody>
               <ModalFooter>
-                <Button color="warning" onPress={handleAddTask}
-                isDisabled={disabled}
+                <Button
+                  color="warning"
+                  onPress={handleAddTask}
+                  isDisabled={disabled}
                 >
                   Update
                 </Button>

@@ -11,7 +11,7 @@ export async function DELETE(req, res) {
   const headersInstance = headers()
   const taskmastertoken = headersInstance.get('authorization').split('Bearer ')[1]
   
-console.log("this is token",taskmastertoken)
+
     if (!taskmastertoken)
       return new NextResponse(
         JSON.stringify({

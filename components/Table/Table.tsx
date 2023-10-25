@@ -59,7 +59,7 @@ const statusColorMap = {
 
 const INITIAL_VISIBLE_COLUMNS = [
   "task",
-  "desc",
+  // "desc",
   "priority",
   "status",
   "actions",
@@ -240,7 +240,7 @@ export default function App() {
       case "actions":
         return (
           <div className="relative flex items-center gap-2">
-            <Tooltip content="Details">
+            <Tooltip content="More Details">
               <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
                 <EyeIcon
                   onClick={(e: any) => {

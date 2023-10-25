@@ -16,6 +16,9 @@ import { Divider } from "@nextui-org/react";
 import { useUserContext } from "@/context/userContexts";
 import { dateParser, timeParser } from "@/utils/utils";
 import { Flip, Slide, toast } from "react-toastify";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import "react-quill/dist/quill.bubble.css";
 
 type Props = {
   onOpenView: any;
@@ -50,7 +53,6 @@ const ViewModel = ({
     navigator.clipboard
       .writeText(data.desc)
       .then(() => {
-
         toast.info("Copied to clipboard", {
           position: "top-right",
           autoClose: 1000,
@@ -65,8 +67,6 @@ const ViewModel = ({
         console.error("Error copying to clipboard: ", err);
       });
   };
-
-  
 
   return (
     <>
@@ -106,7 +106,15 @@ const ViewModel = ({
                       </button>
                     </div>
 
-                    <pre style={{ whiteSpace: 'pre-wrap' }}>{data.desc}</pre>
+                    {/* <pre style={{ whiteSpace: 'pre-wrap' }} dangerouslySetInnerHTML={{__html: data}}>{data.desc}</pre> */}
+                    {/* <div dangerouslySetInnerHTML={{ __html: data.desc }} /> */}
+                    <ReactQuill
+                      theme="bubble"
+                      value={desc}
+                      onChange={setDesc}
+                      readOnly
+                    />
+
                     <Divider className="my-1" />
                   </div>
 
@@ -118,12 +126,18 @@ const ViewModel = ({
                   <div>
                     <p className="font-semibold">Status</p>
                     <Chip
-            variant="faded"
-            color={data.status == "Completed" ? "success" : data.status == "Active" ? "warning" : "danger" }
-          >
-            {data.status}
-          </Chip>
-                   
+                      variant="faded"
+                      color={
+                        data.status == "Completed"
+                          ? "success"
+                          : data.status == "Active"
+                          ? "warning"
+                          : "danger"
+                      }
+                    >
+                      {data.status}
+                    </Chip>
+
                     <Divider className="my-1" />
                   </div>
                   <div>
