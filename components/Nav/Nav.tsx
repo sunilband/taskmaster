@@ -128,7 +128,7 @@ const Nav = (props: Props) => {
           <Button
             as={Link}
             color="primary"
-            onClick={handleSignout}
+            onClick={handleLoginRoute}
             variant="flat"
           >
             Login

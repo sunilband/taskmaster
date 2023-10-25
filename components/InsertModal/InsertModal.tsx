@@ -2,7 +2,9 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { toast } from "react-toastify";
-import ReactQuill from "react-quill";
+// import ReactQuill from "react-quill";
+import dynamic from 'next/dynamic';
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 import "react-quill/dist/quill.snow.css";
 
 import {

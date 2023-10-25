@@ -16,7 +16,9 @@ import { Divider } from "@nextui-org/react";
 import { useUserContext } from "@/context/userContexts";
 import { dateParser, timeParser } from "@/utils/utils";
 import { Flip, Slide, toast } from "react-toastify";
-import ReactQuill from "react-quill";
+// import ReactQuill from "react-quill";
+import dynamic from "next/dynamic";
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 import "react-quill/dist/quill.snow.css";
 import "react-quill/dist/quill.bubble.css";
 
