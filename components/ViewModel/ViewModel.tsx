@@ -69,12 +69,14 @@ const ViewModel = ({
         console.error("Error copying to clipboard: ", err);
       });
   };
+  
 
   return (
     <>
       <Modal
         backdrop={"blur"}
         isOpen={isOpenView}
+  
         onOpenChange={onOpenChangeView}
         placement="center"
         className="mx-4"
@@ -108,11 +110,12 @@ const ViewModel = ({
                       </button>
                     </div>
 
-                    {/* <pre style={{ whiteSpace: 'pre-wrap' }} dangerouslySetInnerHTML={{__html: data}}>{data.desc}</pre> */}
+                    {/* <pre style={{ whiteSpace: 'pre-wrap' }}>{data.desc}</pre> */}
                     {/* <div dangerouslySetInnerHTML={{ __html: data.desc }} /> */}
+
                     <ReactQuill
                       theme="bubble"
-                      value={desc}
+                      value={data.desc}
                       onChange={setDesc}
                       readOnly
                     />
