@@ -29,14 +29,23 @@
 }
 
 
-/* quill editor */
-.editor:first-child{
-  border: 2px solid #D0D0D0 !important;
-  border-radius: 10px 10px 0 0 !important;
+
+
+/* quill editor*/
+
+.editor .ql-toolbar {
+  border-left: 2px solid #D0D0D0 !important;
+  border-top: 2px solid #D0D0D0 !important;
+  border-right: 2px solid #D0D0D0 !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius:10px 10px 0 0 !important;
 }
-/* make one for second child */
-.editor:last-child{
-  border: 2px solid #D0D0D0 !important;
+.editor .ql-container {
+  border-left: 2px solid #D0D0D0 !important;
+  border-bottom: 2px solid #D0D0D0 !important;
+  border-right: 2px solid #D0D0D0 !important;
   border-radius: 0 0 10px 10px !important;
 }
 

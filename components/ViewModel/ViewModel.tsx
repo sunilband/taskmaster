@@ -118,7 +118,7 @@ const ViewModel = ({
                       value={data.desc}
                       onChange={setDesc}
                       readOnly
-                      className="editor"
+                      
                     />
 
                     <Divider className="my-1" />
