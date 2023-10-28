@@ -38,8 +38,7 @@ const Nav = (props: Props) => {
     "Help & Feedback",
     "Log Out",
   ];
-  const name = user.name
-    ? user.name
+  const name = user?.name? user?.name
         .split(" ")
         .map((x) => x[0])
         .join(" ")
@@ -93,7 +92,7 @@ const Nav = (props: Props) => {
       </NavbarContent> */}
       <NavbarContent justify="end">
       {path=="/"?<Tooltip
-          content={user.name}
+          content={user?.name}
           className="p-2 mt-1 border bg-[#7828C8] text-white tracking-widest rounded-full px-3"
           motionProps={{
             variants: {
@@ -123,7 +122,7 @@ const Nav = (props: Props) => {
             size="md"
           />
         </Tooltip>:null}
-        {(path == "/signup" || path == "/") && !user.token  ? (
+        {(path == "/signup" || path == "/") && !user?.token  ? (
           <NavbarItem>
           <Button
             as={Link}
@@ -147,7 +146,7 @@ const Nav = (props: Props) => {
           </Button>
         </NavbarItem>
         ) : null}
-        {user.token ? (
+        {user?.token ? (
           <NavbarItem>
             <Button
               as={Link}

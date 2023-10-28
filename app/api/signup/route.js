@@ -2,11 +2,14 @@ import { NextResponse } from "next/server";
 import { UserModel } from "@/utils/backend/userModel";
 import { connectDB } from "@/utils/backend/mongoDB";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken"
 
 
 export async function POST(req, res) {
   try {
-    const { name, email, password } = await req.json();
+   
+    const { verifyToken } = await req.json();
+    const {name, email, password } = jwt.verify(verifyToken, process.env.NEXT_PUBLIC_JWT_SECRET);
 
     if (!name || !email || !password)
       return new NextResponse(

@@ -111,7 +111,7 @@ export default function App() {
 
     if (hasSearchFilter) {
       filteredUsers = filteredUsers.filter((user) =>
-        (user.task + " " + user.desc)
+        (user?.task + " " + user?.desc)
           .toLowerCase()
           .includes(filterValue.toLowerCase())
       );
@@ -121,7 +121,7 @@ export default function App() {
       Array.from(statusFilter).length !== statusOptions.length
     ) {
       filteredUsers = filteredUsers.filter((user) =>
-        Array.from(statusFilter).includes(user.status)
+        Array.from(statusFilter).includes(user?.status)
       );
     }
 
@@ -130,7 +130,7 @@ export default function App() {
       Array.from(priorityFilter).length !== priorityOptions.length
     ) {
       filteredUsers = filteredUsers.filter((user) =>
-        Array.from(priorityFilter).includes(user.priority)
+        Array.from(priorityFilter).includes(user?.priority)
       );
     }
 
@@ -572,7 +572,7 @@ export default function App() {
     if (taskmastertoken) {
       getuser(taskmastertoken).then((res) => {
         setUser(res.user);
-        setToken(res.user.token);
+        setToken(res.user?.token);
       });
     } else {
       router.push("/login");
@@ -580,19 +580,19 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (user.token)
-      gettasks(user.token ? user.token : "").then((res) => {
+    if (user?.token)
+      gettasks(user?.token ? user?.token : "").then((res) => {
         if (res.error) {
           toast.error(res.error);
         } else {
           setTasks(res.data.reverse());
         }
       });
-  }, [refresh, user.token]);
+  }, [refresh, user?.token]);
 
   useEffect(() => {
-    if (user.token)
-      toast.success("Welcome Back" + " " + user.name + "!", {
+    if (user?.token)
+      toast.success("Welcome Back" + " " + user?.name + "!", {
         position: "bottom-right",
         autoClose: 2000,
         hideProgressBar: false,
@@ -601,7 +601,7 @@ export default function App() {
         theme: "light",
         transition: Flip,
       });
-  }, [user.token]);
+  }, [user?.token]);
 
   const bind = useLongPress((data) => {
     

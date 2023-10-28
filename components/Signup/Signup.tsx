@@ -7,6 +7,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { toast } from "react-toastify";
 import { signup } from "@/utils/apiCalls/Signup";
+import {sendmail} from "@/utils/apiCalls/SendMail";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useUserContext } from "@/context/userContexts";
@@ -65,10 +66,10 @@ const Signup = (props: Props) => {
     }
 
     try {
-      const data = await signup({ name, email, password });
+      const data = await sendmail({ name, email, password });
       if (data.success) {
         toast.success(data.message);
-        router.push("/login");
+        // router.push("/login");
       } else {
         toast.error(data.error);
       }

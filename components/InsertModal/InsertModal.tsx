@@ -47,7 +47,7 @@ const InsertModal = ({
       setDisabled(true);
       createTask(
         { task, desc, priority, status },
-        user.token ? user.token : ""
+        user?.token ? user?.token : ""
       ).then((res) => {
         if (task === "" || desc === "" || priority === "" || status === "") {
           setDisabled(false);

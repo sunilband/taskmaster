@@ -27,7 +27,7 @@ const UpdateModal = ({ onOpenUpdate, isOpenUpdate, onOpenChangeUpdate,data,refre
   const handleDeleteTask = () => {
     try {
         const id=data.id;
-        deletetask(id,user.token ? user.token : "").then((res) => {
+        deletetask(id,user?.token ? user?.token : "").then((res) => {
             if (res.error) {
               toast.error(res.error);
             } else {

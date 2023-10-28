@@ -66,7 +66,7 @@ const UpdateModal = ({
       setDisabled(true);
       updatetask(
         { task, desc, priority, status, id: data.id },
-        user.token ? user.token : ""
+        user?.token ? user?.token : ""
       ).then((res) => {
         if (task === "" || desc === "" || priority === "" || status === "") {
           setDisabled(false);
