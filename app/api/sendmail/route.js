@@ -11,13 +11,7 @@ export async function POST(request) {
       process.env.NEXT_PUBLIC_JWT_SECRET
     );
     const link = process.env.NEXT_PUBLIC_VERIFY_URL + `?verifyToken=${token}`;
-    // const html = `<h1>Hello ${name} !<h1/>
-    // <br>
-    // <p>Welcome to TaskMaster !<p/>
-    // <br>
-    // <p>Click to <a href='${link}'>verify</a> your email.<p/>
-    // `;
-
+   
     const html = `
     <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -154,7 +148,7 @@ a, a:hover {
 		<td align="center" valign="top" style="border-collapse: collapse; border-spacing: 0; margin: 0; padding: 0; padding-left: 6.25%; padding-right: 6.25%; width: 87.5%;
 			padding-top: 25px;
 			padding-bottom: 5px;" class="button"><a
-			href="${link} target="_blank" style="text-decoration: underline;">
+			href="${link}" target="_blank" style="text-decoration: underline;">
 				<table border="0" cellpadding="0" cellspacing="0" align="center" style="max-width: 240px; min-width: 120px; border-collapse: collapse; border-spacing: 0; padding: 0;"><tr><td align="center" valign="middle" style="padding: 12px 24px; margin: 0; text-decoration: underline; border-collapse: collapse; border-spacing: 0; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; -khtml-border-radius: 4px;"
 					bgcolor="#E9703E"><a target="_blank" style="text-decoration: underline;
 					color: #FFFFFF; font-family: sans-serif; font-size: 17px; font-weight: 400; line-height: 120%;"
@@ -205,7 +199,7 @@ a, a:hover {
 
     await sendMail(email, "Verify Email", html);
     return NextResponse.json(
-      { success: true, message: "Email Sent Successfully" },
+      { success: true, message: "Email verification link sent to your mail !" },
       { status: 200 }
     );
   } catch (error) {

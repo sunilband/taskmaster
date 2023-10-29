@@ -6,7 +6,7 @@ import { Button } from "@nextui-org/react";
 import { useState } from "react";
 import Link from "next/link";
 import { toast } from "react-toastify";
-import { signup } from "@/utils/apiCalls/Signup";
+// import { signup } from "@/utils/apiCalls/Signup";
 import {sendmail} from "@/utils/apiCalls/SendMail";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -25,6 +25,7 @@ const Signup = (props: Props) => {
   const [email, setEmail] = useState<null | string>(null);
   const [password, setPassword] = useState<null | string>(null);
   const [confirmPassword, setConfirmPassword] = useState<null | string>(null);
+  const [disableBtn,setDisableBtn]=useState(false)
   const router = useRouter();
 
   useEffect(() => {
@@ -68,6 +69,7 @@ const Signup = (props: Props) => {
     try {
       const data = await sendmail({ name, email, password });
       if (data.success) {
+        setDisableBtn(prev=>!prev)
         toast.success(data.message);
         // router.push("/login");
       } else {
@@ -161,6 +163,8 @@ const Signup = (props: Props) => {
               color="primary"
               isLoading={loggingIn}
               onClick={handleSubmit}
+              disabled={disableBtn}
+              className={disableBtn==true?"opacity-50 cursor-not-allowed":""}
             >
               Sign up
             </Button>
