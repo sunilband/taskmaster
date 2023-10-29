@@ -16,11 +16,24 @@ export async function sendMail(to,subject,html) {
         html,
       };
 
-  await transporter.sendMail(mailOptions, function (error, info) {
-    if (error) {
-      throw new Error(error);
-    } else {
-      return true;
-    }
+  // await transporter.sendMail(mailOptions, function (error, info) {
+  //   if (error) {
+  //     throw new Error(error);
+  //   } else {
+  //     return true;
+  //   }
+  // });
+
+  await new Promise((resolve, reject) => {
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error(err);
+        reject(err);
+      } else {
+        resolve(info);
+        return true
+      }
+    });
   });
+
 }

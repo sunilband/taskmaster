@@ -1,11 +1,38 @@
 import { NextResponse } from "next/server";
-import nodemailer from "nodemailer";
+import { UserModel } from "@/utils/backend/userModel";
+import { connectDB } from "@/utils/backend/mongoDB";
 import { sendMail } from "../../../utils/mailService";
 import jwt from "jsonwebtoken";
 
 export async function POST(request) {
   try {
     const { name, email, password } = await request.json();
+	if (!name || !email || !password){
+		return new NextResponse(
+			JSON.stringify({
+			  success: false,
+			  error: "Incomplete Data",
+			}),
+			{
+			  status: 400,
+			}
+		)
+	}
+
+	await connectDB();
+
+    let user = await UserModel.findOne({ email });
+    if (user)
+      return new NextResponse(
+        JSON.stringify({
+          success: false,
+          error: "Email already registered",
+        }),
+        {
+          status: 400,
+        }
+      );
+
     const token = jwt.sign(
       { name, email, password },
       process.env.NEXT_PUBLIC_JWT_SECRET
