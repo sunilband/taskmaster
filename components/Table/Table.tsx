@@ -7,6 +7,8 @@ import { getuser } from "@/utils/apiCalls/GetUser";
 import { useRouter } from "next/navigation";
 import { Flip, toast } from "react-toastify";
 import { motion } from "framer-motion";
+import {convert} from 'html-to-text';
+
 
 import { useLongPress } from 'use-long-press';
 const cookieCutter = require("cookie-cutter");
@@ -59,7 +61,7 @@ const statusColorMap = {
 
 const INITIAL_VISIBLE_COLUMNS = [
   "task",
-  // "desc",
+  "desc",
   "priority",
   "status",
   "actions",
@@ -71,7 +73,6 @@ export default function App() {
   const { user, setUser } = useUserContext();
   const router = useRouter();
   const [token, setToken] = useState("");
-  //
   const [tasks, setTasks] = useState<>([]);
   const [refresh, setRefresh] = useState(false);
   const [updateButtonClick, setUpdateButtonClick] = useState(false);
@@ -95,6 +96,14 @@ export default function App() {
     direction: "ascending",
   });
   const [page, setPage] = React.useState(1);
+
+  // description view options
+  const options = {
+    wordwrap: 130,
+    // ...
+  };
+  
+ 
 
   const hasSearchFilter = Boolean(filterValue);
 
@@ -167,9 +176,9 @@ export default function App() {
           : tuple.task;
 
       case "desc":
-        return tuple.desc.length > 20
-          ? tuple.desc.substring(0, 20) + "..."
-          : tuple.desc;
+        return convert(tuple.desc,options).length > 20
+          ? convert(tuple.desc,options).substring(0, 20) + "..."
+          : convert(tuple.desc,options);
       case "createdAt":
         return (
           <div className="flex flex-col">

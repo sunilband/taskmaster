@@ -13,6 +13,7 @@
     "bcryptjs": "^2.4.3",
     "cookie-cutter": "^0.2.0",
     "framer-motion": "^10.16.4",
+    "html-to-text": "^9.0.5",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^7.5.3",
     "next": "latest",
@@ -24,6 +25,7 @@
     "use-long-press": "^3.2.0"
   },
   "devDependencies": {
+    "@types/html-to-text": "^9.0.3",
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",

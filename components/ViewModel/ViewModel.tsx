@@ -12,7 +12,7 @@ import {
   Input,
 } from "@nextui-org/react";
 import { Divider } from "@nextui-org/react";
-
+import {convert} from 'html-to-text';
 import { useUserContext } from "@/context/userContexts";
 import { dateParser, timeParser } from "@/utils/utils";
 import { Flip, Slide, toast } from "react-toastify";
@@ -52,8 +52,15 @@ const ViewModel = ({
   }, [refresh]);
 
   const copyToClipboard = () => {
+    const options = {
+      wordwrap: 130,
+      // ...
+    };
+    const html = data.desc;
+    const text = convert(html, options);
+    
     navigator.clipboard
-      .writeText(data.desc)
+      .writeText(text)
       .then(() => {
         toast.info("Copied to clipboard", {
           position: "top-right",
