@@ -80,6 +80,7 @@ const ForgotPassword = (props: Props) => {
       const data = await updatepassword({ verifyToken, password });
       if (data.success) {
         toast.success(data.message);
+        router.push("/login");
       } else {
         toast.error(data.error);
       }
