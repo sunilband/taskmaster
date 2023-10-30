@@ -158,6 +158,21 @@ const Nav = (props: Props) => {
             </Button>
           </NavbarItem>
         ) : null}
+
+        {
+          path == "/recover"?
+          <NavbarItem>
+          <Button
+            as={Link}
+            color="primary"
+            onClick={handleLoginRoute}
+            variant="flat"
+          >
+            Login
+          </Button>
+        </NavbarItem>
+        :null
+        }
         
       </NavbarContent>
       {/* <NavbarMenu>

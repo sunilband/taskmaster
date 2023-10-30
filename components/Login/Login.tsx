@@ -118,6 +118,11 @@ const Login = (props: Props) => {
             onChange={(e) => setPassword(e.target.value)}
             value={password}
           />
+          <Link href="/recover">
+            <p className="text-medium tracking-wider transition-all delay-100 duration-200 ease-in-out  hover:underline font-semibold text-white text-opacity-80">
+              Forgot Password?
+            </p>
+          </Link>
           <div className="flex flex-col gap-4">
             <Button color="primary" isLoading={loggingIn} type="submit">
               Login
@@ -132,6 +137,7 @@ const Login = (props: Props) => {
               Don&rsquo;t have an account?
             </p>
             </Link>
+            
           </div>
         </form>
       </motion.div>
