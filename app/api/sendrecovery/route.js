@@ -106,7 +106,8 @@ a, a:hover {
 			<!-- Set text color to background color -->
 			<div style="display: none; visibility: hidden; overflow: hidden; opacity: 0; font-size: 1px; line-height: 1px; height: 0; max-height: 0; max-width: 0;
 			color: #F0F0F0;" class="preheader">
-				Available on&nbsp;GitHub and&nbsp;CodePen. Highly compatible. Designer friendly. More than 50%&nbsp;of&nbsp;total email opens occurred on&nbsp;a&nbsp;mobile device&nbsp;— a&nbsp;mobile-friendly design is&nbsp;a&nbsp;must for&nbsp;email campaigns.</div>
+			Recover your account by resseting your password.	
+            </div>
 
 		</td>
 	</tr>
