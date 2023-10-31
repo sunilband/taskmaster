@@ -23,6 +23,7 @@ const ForgotPassword = (props: Props) => {
   const searchParams = useSearchParams();
   const verifyToken = searchParams.get("verifyToken");
   const { user, setUser } = useUserContext();
+  const [disableBtn, setDisableBtn] = useState(false);
   const [loggingIn, setLoggingIn] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -51,6 +52,7 @@ const ForgotPassword = (props: Props) => {
     try {
       const data = await sendrecovery({ email });
       if (data.success) {
+        setDisableBtn((prev) => !prev);
         toast.success(data.message);
       } else {
         toast.error(data.error);
@@ -71,6 +73,11 @@ const ForgotPassword = (props: Props) => {
       return toast.error("Please fill all the fields");
     }
 
+    if (password.length < 6) {
+      setLoggingIn(false);
+      return toast.error("Password must be atleast 8 characters long");
+    }
+
     if(password !== confirmPassword){
       setLoggingIn(false);
       return toast.error("Passwords do not match");
@@ -79,6 +86,7 @@ const ForgotPassword = (props: Props) => {
     try {
       const data = await updatepassword({ verifyToken, password });
       if (data.success) {
+        setDisableBtn((prev) => !prev);
         toast.success(data.message);
         router.push("/login");
       } else {
@@ -149,7 +157,12 @@ const ForgotPassword = (props: Props) => {
               />
 
               <div className="flex flex-col gap-4">
-                <Button color="primary" isLoading={loggingIn} type="submit">
+                <Button color="primary" isLoading={loggingIn} type="submit"
+                disabled={disableBtn}
+                className={
+                  disableBtn == true ? "opacity-50 cursor-not-allowed" : ""
+                }
+                >
                   Verify
                 </Button>
               </div>
@@ -182,7 +195,12 @@ const ForgotPassword = (props: Props) => {
               />
 
               <div className="flex flex-col gap-4">
-                <Button color="primary" isLoading={loggingIn} type="button" onClick={resetPassword}>
+                <Button color="primary" isLoading={loggingIn} type="button" onClick={resetPassword}
+                disabled={disableBtn}
+                className={
+                  disableBtn == true ? "opacity-50 cursor-not-allowed" : ""
+                }
+                >
                   Reset
                 </Button>
               </div>
