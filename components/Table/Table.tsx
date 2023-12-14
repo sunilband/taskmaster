@@ -7,10 +7,9 @@ import { getuser } from "@/utils/apiCalls/GetUser";
 import { useRouter } from "next/navigation";
 import { Flip, toast } from "react-toastify";
 import { motion } from "framer-motion";
-import {convert} from 'html-to-text';
+import { convert } from "html-to-text";
 
-
-import { useLongPress } from 'use-long-press';
+import { useLongPress } from "use-long-press";
 const cookieCutter = require("cookie-cutter");
 
 import {
@@ -31,18 +30,18 @@ import {
   Pagination,
   Tooltip,
 } from "@nextui-org/react";
-import { PlusIcon } from "./PlusIcon";
-import { SearchIcon } from "./SearchIcon";
-import { ChevronDownIcon } from "./ChevronDownIcon";
+import { PlusIcon } from "./Icons/PlusIcon";
+import { SearchIcon } from "./Icons/SearchIcon";
+import { ChevronDownIcon } from "./Icons/ChevronDownIcon";
 import { columns, statusOptions, priorityOptions } from "./Data";
 import { capitalize } from "./utils";
-import { EditIcon } from "./EditIcon";
-import { DeleteIcon } from "./DeleteIcon";
-import { EyeIcon } from "./EyeIcon";
-import { CheckIcon } from "./CheckIcon";
-import { CloseIcon } from "./CloseIcon";
-import { WorkIcon } from "./WorkIcon";
-import { UpArrow } from "./UpArrow";
+import { EditIcon } from "./Icons/EditIcon";
+import { DeleteIcon } from "./Icons/DeleteIcon";
+import { EyeIcon } from "./Icons/EyeIcon";
+import { CheckIcon } from "./Icons/CheckIcon";
+import { CloseIcon } from "./Icons/CloseIcon";
+import { WorkIcon } from "./Icons/WorkIcon";
+import { UpArrow } from "./Icons/UpArrow";
 import InsertModal from "../InsertModal/InsertModal";
 import UpdateModal from "../UpdateModal/UpdateModal";
 import ViewModel from "../ViewModel/ViewModel";
@@ -102,8 +101,6 @@ export default function App() {
     wordwrap: 130,
     // ...
   };
-  
- 
 
   const hasSearchFilter = Boolean(filterValue);
 
@@ -176,9 +173,9 @@ export default function App() {
           : tuple.task;
 
       case "desc":
-        return convert(tuple.desc,options).length > 20
-          ? convert(tuple.desc,options).substring(0, 20) + "..."
-          : convert(tuple.desc,options);
+        return convert(tuple.desc, options).length > 20
+          ? convert(tuple.desc, options).substring(0, 20) + "..."
+          : convert(tuple.desc, options);
       case "createdAt":
         return (
           <div className="flex flex-col">
@@ -334,17 +331,15 @@ export default function App() {
   const topContent = React.useMemo(() => {
     return (
       <div className="flex flex-col gap-4 mt-5">
-        <div className="flex sm:flex-row flex-col sm:justify-between items-center gap-3 ">
+        <div className="flex sm:flex-row flex-col sm:justify-between items-center">
           <motion.div
             initial={{
-              scale: 0,
+              opacity: 0,
               x: -100,
-              y: 300,
             }}
             animate={{
-              scale: 1,
+              opacity: 1,
               x: 0,
-              y: 0,
             }}
             transition={{
               type: "spring",
@@ -367,14 +362,12 @@ export default function App() {
 
           <motion.div
             initial={{
-              scale: 0,
+              opacity: 0,
               x: -100,
-              // y: -300,
             }}
             animate={{
-              scale: 1,
+              opacity: 1,
               x: 0,
-              // y: 0,
             }}
             transition={{
               type: "spring",
@@ -386,13 +379,29 @@ export default function App() {
           >
             <Dropdown>
               <DropdownTrigger className="sm:flex">
-                <Button
-                  endContent={<ChevronDownIcon className="text-small" />}
-                  variant="solid"
-                  color="secondary"
+                <motion.div
+                  initial={{
+                    opacity: 0,
+                    x: 200,
+                  }}
+                  animate={{
+                    opacity: 1,
+                    x: 0,
+                  }}
+                  transition={{
+                    type: "spring",
+                    duration: 2,
+                    delay: 0.5,
+                  }}
                 >
-                  Status
-                </Button>
+                  <Button
+                    endContent={<ChevronDownIcon className="text-small" />}
+                    variant="solid"
+                    color="secondary"
+                  >
+                    Status
+                  </Button>
+                </motion.div>
               </DropdownTrigger>
               <DropdownMenu
                 disallowEmptySelection
@@ -411,17 +420,30 @@ export default function App() {
             </Dropdown>
 
             <Dropdown>
-              <DropdownTrigger
-                viewport={{ once: true }}
-                className=" sm:flex"
-              >
-                <Button
-                  endContent={<ChevronDownIcon className="text-small" />}
-                  variant="solid"
-                  color="secondary"
+              <DropdownTrigger viewport={{ once: true }} className=" sm:flex">
+                <motion.div
+                  initial={{
+                    opacity: 0,
+                    x: 200,
+                  }}
+                  animate={{
+                    opacity: 1,
+                    x: 0,
+                  }}
+                  transition={{
+                    type: "spring",
+                    duration: 2,
+                    delay: 0.3,
+                  }}
                 >
-                  Priority
-                </Button>
+                  <Button
+                    endContent={<ChevronDownIcon className="text-small" />}
+                    variant="solid"
+                    color="secondary"
+                  >
+                    Priority
+                  </Button>
+                </motion.div>
               </DropdownTrigger>
               <DropdownMenu
                 disallowEmptySelection
@@ -440,13 +462,29 @@ export default function App() {
             </Dropdown>
             <Dropdown>
               <DropdownTrigger className=" sm:flex">
-                <Button
-                  endContent={<ChevronDownIcon className="text-small" />}
-                  variant="solid"
-                  color="secondary"
+                <motion.div
+                  initial={{
+                    opacity: 0,
+                    x: 200,
+                  }}
+                  animate={{
+                    opacity: 1,
+                    x: 0,
+                  }}
+                  transition={{
+                    type: "spring",
+                    duration: 2,
+                    delay: 0.1,
+                  }}
                 >
-                  Columns
-                </Button>
+                  <Button
+                    endContent={<ChevronDownIcon className="text-small" />}
+                    variant="solid"
+                    color="secondary"
+                  >
+                    Columns
+                  </Button>
+                </motion.div>
               </DropdownTrigger>
               <DropdownMenu
                 disallowEmptySelection
@@ -467,14 +505,12 @@ export default function App() {
             </Dropdown>
             <motion.div
               initial={{
-                scale: 0,
+                opacity: 0,
                 x: -100,
-                y: -300,
               }}
               animate={{
-                scale: 1,
+                opacity: 1,
                 x: 0,
-                y: 0,
               }}
               transition={{
                 type: "spring",
@@ -559,6 +595,7 @@ export default function App() {
             isDisabled={pages === 1}
             size="sm"
             variant="flat"
+            className="bg-white disabled:opacity-70"
             onPress={onPreviousPage}
           >
             Previous
@@ -567,6 +604,7 @@ export default function App() {
             isDisabled={pages === 1}
             size="sm"
             variant="flat"
+            className="bg-white disabled:opacity-70"
             onPress={onNextPage}
           >
             Next
@@ -602,7 +640,7 @@ export default function App() {
   useEffect(() => {
     if (user?.token)
       toast.success("Welcome Back" + " " + user?.name + "!", {
-        position: "bottom-right",
+        position: "bottom-center",
         autoClose: 2000,
         hideProgressBar: false,
         closeOnClick: true,
@@ -613,14 +651,12 @@ export default function App() {
   }, [user?.token]);
 
   const bind = useLongPress((data) => {
-    
-      setUpdateButtonClick(false);
-      setAddButtonCliked(false);
-      setDeleteButtonCliked(false);
-      setViewButtonClick(true);
-      setViewData(...data);
-      onOpen();
-    
+    setUpdateButtonClick(false);
+    setAddButtonCliked(false);
+    setDeleteButtonCliked(false);
+    setViewButtonClick(true);
+    setViewData(...data);
+    onOpen();
   });
 
   return (

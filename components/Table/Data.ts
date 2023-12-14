@@ -22,37 +22,7 @@ const columns = [
     {name: "Low", uid: "Low"},
   ];
   
-  const tasks = [
-    {
-      id: 1,
-        task: "Task 1 asdas  ad asdasdasdas dsadasd asd sadasdasd sad",
-        desc: "Description 1",
-        priority: "High",
-        createdAt: "2020-01-01",
-        updatedAt: "2020-01-01",
-        status: "Active",
-    },
-    // make 10 more
-    {
-        id: 2,
-        task: "Task 2",
-        desc: "Description 2 adas das das abjhsdb cacas cdsvhgsad ajsdcuysdavfasd dsadsc",
-        priority: "Medium",
-        createdAt: "2020-01-01",
-        updatedAt: "2020-01-01",
-        status: "Completed",
-    },
-    {
-        id: 3,
-        task: "Task 3",
-        desc: "Description 3",
-        priority: "Low",
-        createdAt: "2020-01-01",
-        updatedAt: "2020-01-01",
-        status: "Inactive",
-    }
-   
-  ];
   
-  export {columns, tasks, statusOptions, priorityOptions};
+  
+  export {columns, statusOptions, priorityOptions};
   
