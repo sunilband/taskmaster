@@ -379,29 +379,13 @@ export default function App() {
           >
             <Dropdown>
               <DropdownTrigger className="sm:flex">
-                <motion.div
-                  initial={{
-                    opacity: 0,
-                    x: 200,
-                  }}
-                  animate={{
-                    opacity: 1,
-                    x: 0,
-                  }}
-                  transition={{
-                    type: "spring",
-                    duration: 2,
-                    delay: 0.5,
-                  }}
+                <Button
+                  endContent={<ChevronDownIcon className="text-small" />}
+                  variant="solid"
+                  color="secondary"
                 >
-                  <Button
-                    endContent={<ChevronDownIcon className="text-small" />}
-                    variant="solid"
-                    color="secondary"
-                  >
-                    Status
-                  </Button>
-                </motion.div>
+                  Status
+                </Button>
               </DropdownTrigger>
               <DropdownMenu
                 disallowEmptySelection
@@ -421,29 +405,13 @@ export default function App() {
 
             <Dropdown>
               <DropdownTrigger viewport={{ once: true }} className=" sm:flex">
-                <motion.div
-                  initial={{
-                    opacity: 0,
-                    x: 200,
-                  }}
-                  animate={{
-                    opacity: 1,
-                    x: 0,
-                  }}
-                  transition={{
-                    type: "spring",
-                    duration: 2,
-                    delay: 0.3,
-                  }}
+                <Button
+                  endContent={<ChevronDownIcon className="text-small" />}
+                  variant="solid"
+                  color="secondary"
                 >
-                  <Button
-                    endContent={<ChevronDownIcon className="text-small" />}
-                    variant="solid"
-                    color="secondary"
-                  >
-                    Priority
-                  </Button>
-                </motion.div>
+                  Priority
+                </Button>
               </DropdownTrigger>
               <DropdownMenu
                 disallowEmptySelection
@@ -462,29 +430,13 @@ export default function App() {
             </Dropdown>
             <Dropdown>
               <DropdownTrigger className=" sm:flex">
-                <motion.div
-                  initial={{
-                    opacity: 0,
-                    x: 200,
-                  }}
-                  animate={{
-                    opacity: 1,
-                    x: 0,
-                  }}
-                  transition={{
-                    type: "spring",
-                    duration: 2,
-                    delay: 0.1,
-                  }}
+                <Button
+                  endContent={<ChevronDownIcon className="text-small" />}
+                  variant="solid"
+                  color="secondary"
                 >
-                  <Button
-                    endContent={<ChevronDownIcon className="text-small" />}
-                    variant="solid"
-                    color="secondary"
-                  >
-                    Columns
-                  </Button>
-                </motion.div>
+                  Columns
+                </Button>
               </DropdownTrigger>
               <DropdownMenu
                 disallowEmptySelection
