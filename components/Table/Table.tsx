@@ -351,7 +351,7 @@ export default function App() {
           >
             <Input
               isClearable
-              className="w-full sm:max-w-[400px]"
+              className="w-full sm:max-w-[400px] mb-3 md:mb-auto"
               placeholder="Search..."
               startContent={<SearchIcon />}
               value={filterValue}
