@@ -1,46 +1,30 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Waves from "../Waves/Waves";
-import { Input } from "@nextui-org/react";
-import { Button } from "@nextui-org/react";
-import { useState } from "react";
+import { Input, Button } from "@nextui-org/react";
 import Link from "next/link";
 import { toast } from "react-toastify";
-// import { signup } from "@/utils/apiCalls/Signup";
-import { sendmail } from "@/utils/apiCalls/SendMail";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 import { useUserContext } from "@/context/userContexts";
-import { getuser } from "@/utils/apiCalls/GetUser";
 import "../Login/Login.css";
-const cookieCutter = require("cookie-cutter");
 import { motion } from "framer-motion";
+import { signupAction } from "@/app/actions/auth";
 
 type Props = {};
 
 const Signup = (props: Props) => {
-  const { user, setUser } = useUserContext();
+  const { setUser } = useUserContext();
   const [loggingIn, setLoggingIn] = useState(false);
-  const [name, setName] = useState<null | string>(null);
-  const [email, setEmail] = useState<null | string>(null);
-  const [password, setPassword] = useState<null | string>(null);
-  const [confirmPassword, setConfirmPassword] = useState<null | string>(null);
-  const [disableBtn, setDisableBtn] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    const taskmastertoken = cookieCutter.get("taskmastertoken");
-    if (taskmastertoken) {
-      const fetchuser = getuser(taskmastertoken).then((res) => {
-        setUser(res.user);
-      });
-      router.push("/");
-    }
-  }, []);
-
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
+  const handleSubmit = async (formData: FormData) => {
     setLoggingIn(true);
+
+    const name = formData.get("name") as string;
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+    const confirmPassword = formData.get("confirmPassword") as string;
+
     if (!name || !email || !password || !confirmPassword) {
       setLoggingIn(false);
       return toast.error("Please fill all the fields");
@@ -58,7 +42,7 @@ const Signup = (props: Props) => {
 
     if (password.length < 6) {
       setLoggingIn(false);
-      return toast.error("Password must be atleast 8 characters long");
+      return toast.error("Password must be at least 6 characters long");
     }
 
     if (password !== confirmPassword) {
@@ -67,19 +51,19 @@ const Signup = (props: Props) => {
     }
 
     try {
-      const data = await sendmail({ name, email, password });
-      if (data.success) {
-        setDisableBtn((prev) => !prev);
-        toast.success(data.message);
-        // router.push("/login");
+      const res = await signupAction(null, formData);
+      if (res.success) {
+        toast.success(res.message);
+        router.push("/login");
       } else {
-        toast.error(data.error);
+        toast.error(res.error);
       }
     } catch (error: any) {
       toast.error(error.toString());
     }
     setLoggingIn(false);
   };
+
   return (
     <div className="relative flex justify-center items-center h-screen w-screen  spacemono">
       <Waves />
@@ -99,7 +83,10 @@ const Signup = (props: Props) => {
         viewport={{ once: true }}
         className="h-[500px] w-[330px] md:h-[500px] md:w-[400px] flex justify-center items-center  rounded-md z-50 glass shadow-2xl border relative"
       >
-        <div className="flex flex-col gap-8 md:h-[450px] md:w-[350px] w-[310px] h-[380px] p-2">
+        <form
+          className="flex flex-col gap-8 md:h-[450px] md:w-[350px] w-[310px] h-[380px] p-2"
+          action={handleSubmit}
+        >
           <motion.p
             initial={{
               scale: 0,
@@ -120,56 +107,44 @@ const Signup = (props: Props) => {
           </motion.p>
           <Input
             type="text"
+            name="name"
             variant="underlined"
             labelPlacement="outside"
             label="Name"
             className="text-white placeholder-white"
             style={{ width: "300px" }}
-            onChange={(e) => setName(e.target.value)}
-            value={name ? name : ""}
           />
           <Input
             type="email"
+            name="email"
             variant="underlined"
             labelPlacement="outside"
             label="Email"
             className="text-white"
             style={{ width: "300px" }}
-            onChange={(e) => setEmail(e.target.value)}
-            value={email ? email : ""}
           />
 
           <Input
             type="password"
+            name="password"
             variant="underlined"
             labelPlacement="outside"
             label="Password"
             className="text-white"
             style={{ width: "300px" }}
-            onChange={(e) => setPassword(e.target.value)}
-            value={password ? password : ""}
           />
 
           <Input
             type="password"
+            name="confirmPassword"
             variant="underlined"
             labelPlacement="outside"
             label="Confirm Password"
             className="text-white"
             style={{ width: "300px" }}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            value={confirmPassword ? confirmPassword : ""}
           />
           <div className="flex flex-col gap-4">
-            <Button
-              color="primary"
-              isLoading={loggingIn}
-              onClick={handleSubmit}
-              disabled={disableBtn}
-              className={
-                disableBtn == true ? "opacity-50 cursor-not-allowed" : ""
-              }
-            >
+            <Button color="primary" isLoading={loggingIn} type="submit">
               Sign up
             </Button>
             <div className="relative mt-3  w-full">
@@ -186,7 +161,7 @@ const Signup = (props: Props) => {
               </p>
             </Link>
           </div>
-        </div>
+        </form>
       </motion.div>
     </div>
   );

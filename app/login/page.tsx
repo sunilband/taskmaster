@@ -1,13 +1,10 @@
-import Login from '@/components/Login/Login'
-import React from 'react'
+import Login from "@/components/Login/Login.client";
+import React from "react";
 
-
-type Props = {}
+type Props = {};
 
 const page = (props: Props) => {
-  return (
-    <Login/>
-  )
-}
+  return <Login />;
+};
 
-export default page
+export default page;

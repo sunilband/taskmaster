@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React from "react";
 import { toast } from "react-toastify";
 
 import {
@@ -9,35 +9,37 @@ import {
   ModalBody,
   ModalFooter,
   Button,
-  Input,
 } from "@nextui-org/react";
-import { useUserContext } from "@/context/userContexts";
-import { deletetask } from "@/utils/apiCalls/DeleteTask";
+import { deleteTaskAction } from "@/app/actions/task";
+
+import { ITask } from "@/types/index";
 
 type Props = {
-  onOpenUpdate: any;
-  isOpenUpdate: any;
-  onOpenChangeUpdate: any;
-  data: any;
-  refresh:any;
-  setRefresh:any;
+  onOpenUpdate: () => void;
+  isOpenUpdate: boolean;
+  onOpenChangeUpdate: (isOpen: boolean) => void;
+  data: ITask;
 };
-const UpdateModal = ({ onOpenUpdate, isOpenUpdate, onOpenChangeUpdate,data,refresh,setRefresh }: Props) => {
-  const { user } = useUserContext();
-  const handleDeleteTask = () => {
+const DeleteModal = ({
+  onOpenUpdate,
+  isOpenUpdate,
+  onOpenChangeUpdate,
+  data,
+}: Props) => {
+  const handleDeleteTask = async () => {
     try {
-        const id=data.id;
-        deletetask(id,user?.token ? user?.token : "").then((res) => {
-            if (res.error) {
-              toast.error(res.error);
-            } else {
-              toast.success(res.message);
-              setRefresh(!refresh)
-              onOpenChangeUpdate(false);
-            }
-          });
-        
-      
+      const formData = new FormData();
+      formData.append("id", data._id);
+
+      const res = await deleteTaskAction(null, formData);
+
+      if (res.success) {
+        toast.success(res.message);
+        // setRefresh(!refresh); // Not needed with revalidatePath
+        onOpenChangeUpdate(false);
+      } else {
+        toast.error(res.error);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -45,7 +47,6 @@ const UpdateModal = ({ onOpenUpdate, isOpenUpdate, onOpenChangeUpdate,data,refre
 
   return (
     <>
-      {/* <Button onPress={onOpen} color="primary">Open Modal</Button> */}
       <Modal
         backdrop={"blur"}
         isOpen={isOpenUpdate}
@@ -60,7 +61,9 @@ const UpdateModal = ({ onOpenUpdate, isOpenUpdate, onOpenChangeUpdate,data,refre
                 Delete Task
               </ModalHeader>
               <ModalBody>
-               <p className="font-semibold">Are you sure you want to delete the following task?</p>
+                <p className="font-semibold">
+                  Are you sure you want to delete the following task?
+                </p>
                 <p>{data.task}</p>
               </ModalBody>
               <ModalFooter>
@@ -76,4 +79,4 @@ const UpdateModal = ({ onOpenUpdate, isOpenUpdate, onOpenChangeUpdate,data,refre
   );
 };
 
-export default UpdateModal;
+export default DeleteModal;
