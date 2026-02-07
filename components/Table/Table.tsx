@@ -1,16 +1,15 @@
-// @ts-nocheck
 "use client";
+
 import React from "react";
 import { useEffect, useState } from "react";
 import { useUserContext } from "@/context/userContexts";
-import { getuser } from "@/utils/apiCalls/GetUser";
 import { useRouter } from "next/navigation";
 import { Flip, toast } from "react-toastify";
 import { motion } from "framer-motion";
 import { convert } from "html-to-text";
 
 import { useLongPress } from "use-long-press";
-const cookieCutter = require("cookie-cutter");
+import { ITask } from "@/types/index";
 
 import {
   Table,
@@ -19,22 +18,13 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  Input,
-  Button,
-  DropdownTrigger,
-  Dropdown,
-  DropdownMenu,
-  DropdownItem,
   Chip,
-  User,
-  Pagination,
   Tooltip,
+  SortDescriptor,
+  Selection,
 } from "@nextui-org/react";
-import { PlusIcon } from "./Icons/PlusIcon";
-import { SearchIcon } from "./Icons/SearchIcon";
-import { ChevronDownIcon } from "./Icons/ChevronDownIcon";
-import { columns, statusOptions, priorityOptions } from "./Data";
-import { capitalize } from "./utils";
+import { TopContent } from "./TopContent";
+import { BottomContent } from "./BottomContent";
 import { EditIcon } from "./Icons/EditIcon";
 import { DeleteIcon } from "./Icons/DeleteIcon";
 import { EyeIcon } from "./Icons/EyeIcon";
@@ -48,9 +38,9 @@ import ViewModel from "../ViewModel/ViewModel";
 import DeleteModel from "../DeleteModal/DeleteModal";
 import { useDisclosure } from "@nextui-org/react";
 import { useTaskContext } from "@/context/taskContext";
-import { gettasks } from "@/utils/apiCalls/GetTasks";
 import { dateParser, timeParser } from "@/utils/utils";
-import { deletetask } from "@/utils/apiCalls/DeleteTask";
+import { columns, statusOptions, priorityOptions } from "./Data";
+import { capitalize } from "./utils";
 
 const statusColorMap = {
   Active: "warning",
@@ -68,29 +58,29 @@ const INITIAL_VISIBLE_COLUMNS = [
   "updatedAt",
 ];
 
-export default function App() {
-  const { user, setUser } = useUserContext();
+export default function App({ initialTasks }: { initialTasks: ITask[] }) {
+  const { user } = useUserContext();
   const router = useRouter();
-  const [token, setToken] = useState("");
-  const [tasks, setTasks] = useState<>([]);
-  const [refresh, setRefresh] = useState(false);
+  const [tasks, setTasks] = useState<ITask[]>(initialTasks || []);
   const [updateButtonClick, setUpdateButtonClick] = useState(false);
   const [viewButtonClick, setViewButtonClick] = useState(false);
   const [addButtonCliked, setAddButtonCliked] = useState(false);
   const [deleteButtonCliked, setDeleteButtonCliked] = useState(false);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [updateData, setUpdateData] = useState({});
-  const [viewData, setViewData] = useState({});
-  const [deleteData, setDeleteData] = useState({});
+  const [updateData, setUpdateData] = useState<Partial<ITask>>({});
+  const [viewData, setViewData] = useState<Partial<ITask>>({});
+  const [deleteData, setDeleteData] = useState<Partial<ITask>>({});
   const [filterValue, setFilterValue] = React.useState("");
-  const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
-  const [visibleColumns, setVisibleColumns] = React.useState(
-    new Set(INITIAL_VISIBLE_COLUMNS)
+  const [selectedKeys, setSelectedKeys] = React.useState<Selection>(
+    new Set([]),
   );
-  const [statusFilter, setStatusFilter] = React.useState("all");
-  const [priorityFilter, setPriorityFilter] = React.useState("all");
+  const [visibleColumns, setVisibleColumns] = React.useState<Selection>(
+    new Set(INITIAL_VISIBLE_COLUMNS),
+  );
+  const [statusFilter, setStatusFilter] = React.useState<Selection>("all");
+  const [priorityFilter, setPriorityFilter] = React.useState<Selection>("all");
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [sortDescriptor, setSortDescriptor] = React.useState({
+  const [sortDescriptor, setSortDescriptor] = React.useState<SortDescriptor>({
     column: "age",
     direction: "ascending",
   });
@@ -108,7 +98,7 @@ export default function App() {
     if (visibleColumns === "all") return columns;
 
     return columns.filter((column) =>
-      Array.from(visibleColumns).includes(column.uid)
+      Array.from(visibleColumns as any).includes(column.uid),
     );
   }, [visibleColumns]);
 
@@ -119,7 +109,7 @@ export default function App() {
       filteredUsers = filteredUsers.filter((user) =>
         (user?.task + " " + user?.desc)
           .toLowerCase()
-          .includes(filterValue.toLowerCase())
+          .includes(filterValue.toLowerCase()),
       );
     }
     if (
@@ -127,7 +117,7 @@ export default function App() {
       Array.from(statusFilter).length !== statusOptions.length
     ) {
       filteredUsers = filteredUsers.filter((user) =>
-        Array.from(statusFilter).includes(user?.status)
+        Array.from(statusFilter as any).includes(user?.status),
       );
     }
 
@@ -136,7 +126,7 @@ export default function App() {
       Array.from(priorityFilter).length !== priorityOptions.length
     ) {
       filteredUsers = filteredUsers.filter((user) =>
-        Array.from(priorityFilter).includes(user?.priority)
+        Array.from(priorityFilter as any).includes(user?.priority),
       );
     }
 
@@ -154,16 +144,16 @@ export default function App() {
 
   const sortedItems = React.useMemo(() => {
     return [...items].sort((a, b) => {
-      const first = a[sortDescriptor.column];
-      const second = b[sortDescriptor.column];
+      const first = a[sortDescriptor.column as keyof ITask] ?? "";
+      const second = b[sortDescriptor.column as keyof ITask] ?? "";
       const cmp = first < second ? -1 : first > second ? 1 : 0;
 
       return sortDescriptor.direction === "descending" ? -cmp : cmp;
     });
   }, [sortDescriptor, items]);
 
-  const renderCell = React.useCallback((tuple, columnKey) => {
-    const cellValue = tuple[columnKey];
+  const renderCell = React.useCallback((tuple: ITask, columnKey: React.Key) => {
+    const cellValue = tuple[columnKey as keyof ITask];
 
     switch (columnKey) {
       case "task":
@@ -195,7 +185,7 @@ export default function App() {
       case "status":
         return cellValue == "Completed" ? (
           <Chip
-            startContent={<CheckIcon size={18} />}
+            startContent={<CheckIcon size={18} {...({} as any)} />}
             variant="faded"
             color="success"
           >
@@ -203,7 +193,7 @@ export default function App() {
           </Chip>
         ) : cellValue == "Active" ? (
           <Chip
-            startContent={<WorkIcon size={18} />}
+            startContent={<WorkIcon size={18} {...({} as any)} />}
             variant="faded"
             color="warning"
           >
@@ -211,7 +201,7 @@ export default function App() {
           </Chip>
         ) : cellValue == "Inactive" ? (
           <Chip
-            startContent={<CloseIcon size={18} />}
+            startContent={<CloseIcon size={18} {...({} as any)} />}
             variant="faded"
             color="danger"
           >
@@ -219,9 +209,6 @@ export default function App() {
           </Chip>
         ) : null;
 
-      //   <Chip className="capitalize" color={statusColorMap[tuple.status]} size="sm" variant="flat">
-      //     {cellValue}
-      //   </Chip>
       case "priority":
         return cellValue == "High" ? (
           <div className="flex flex-row  items-center gap-1">
@@ -309,12 +296,15 @@ export default function App() {
     }
   }, [page]);
 
-  const onRowsPerPageChange = React.useCallback((e) => {
-    setRowsPerPage(Number(e.target.value));
-    setPage(1);
-  }, []);
+  const onRowsPerPageChange = React.useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      setRowsPerPage(Number(e.target.value));
+      setPage(1);
+    },
+    [],
+  );
 
-  const onSearchChange = React.useCallback((value) => {
+  const onSearchChange = React.useCallback((value: string) => {
     if (value) {
       setFilterValue(value);
       setPage(1);
@@ -328,191 +318,29 @@ export default function App() {
     setPage(1);
   }, []);
 
+  /* eslint-disable react-hooks/exhaustive-deps */
   const topContent = React.useMemo(() => {
     return (
-      <div className="flex flex-col gap-4 mt-5">
-        <div className="flex sm:flex-row flex-col sm:justify-between items-center">
-          <motion.div
-            initial={{
-              opacity: 0,
-              x: -100,
-            }}
-            animate={{
-              opacity: 1,
-              x: 0,
-            }}
-            transition={{
-              type: "spring",
-              duration: 2,
-              delay: 0.5,
-            }}
-            viewport={{ once: true }}
-            className="w-full "
-          >
-            <Input
-              isClearable
-              className="w-full sm:max-w-[400px] mb-3 md:mb-auto"
-              placeholder="Search..."
-              startContent={<SearchIcon />}
-              value={filterValue}
-              onClear={() => onClear()}
-              onValueChange={onSearchChange}
-            />
-          </motion.div>
-
-          <motion.div
-            initial={{
-              opacity: 0,
-              x: -100,
-            }}
-            animate={{
-              opacity: 1,
-              x: 0,
-            }}
-            transition={{
-              type: "spring",
-              duration: 2,
-              delay: 0.5,
-            }}
-            viewport={{ once: true }}
-            className="flex flex-wrap justify-center sm:justify-end sm:w-[200vw] gap-3"
-          >
-            <Dropdown>
-              <DropdownTrigger className="sm:flex">
-                <Button
-                  endContent={<ChevronDownIcon className="text-small" />}
-                  variant="solid"
-                  color="secondary"
-                >
-                  Status
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu
-                disallowEmptySelection
-                aria-label="Table Columns"
-                closeOnSelect={false}
-                selectedKeys={statusFilter}
-                selectionMode="multiple"
-                onSelectionChange={setStatusFilter}
-              >
-                {statusOptions.map((status) => (
-                  <DropdownItem key={status.uid} className="capitalize">
-                    {capitalize(status.name)}
-                  </DropdownItem>
-                ))}
-              </DropdownMenu>
-            </Dropdown>
-
-            <Dropdown>
-              <DropdownTrigger viewport={{ once: true }} className=" sm:flex">
-                <Button
-                  endContent={<ChevronDownIcon className="text-small" />}
-                  variant="solid"
-                  color="secondary"
-                >
-                  Priority
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu
-                disallowEmptySelection
-                aria-label="Table Columns"
-                closeOnSelect={false}
-                selectedKeys={priorityFilter}
-                selectionMode="multiple"
-                onSelectionChange={setPriorityFilter}
-              >
-                {priorityOptions.map((priority) => (
-                  <DropdownItem key={priority.uid} className="capitalize">
-                    {capitalize(priority.name)}
-                  </DropdownItem>
-                ))}
-              </DropdownMenu>
-            </Dropdown>
-            <Dropdown>
-              <DropdownTrigger className=" sm:flex">
-                <Button
-                  endContent={<ChevronDownIcon className="text-small" />}
-                  variant="solid"
-                  color="secondary"
-                >
-                  Columns
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu
-                disallowEmptySelection
-                aria-label="Table Columns"
-                closeOnSelect={false}
-                selectedKeys={visibleColumns}
-                selectionMode="multiple"
-                onSelectionChange={setVisibleColumns}
-              >
-                {columns.map((column) =>
-                  column.name != "ID" ? (
-                    <DropdownItem key={column.uid} className="capitalize">
-                      {capitalize(column.name)}
-                    </DropdownItem>
-                  ) : null
-                )}
-              </DropdownMenu>
-            </Dropdown>
-            <motion.div
-              initial={{
-                opacity: 0,
-                x: -100,
-              }}
-              animate={{
-                opacity: 1,
-                x: 0,
-              }}
-              transition={{
-                type: "spring",
-                duration: 2,
-                delay: 0.5,
-              }}
-              viewport={{ once: true }}
-            >
-              <Button
-                color="primary"
-                endContent={<PlusIcon />}
-                onPress={() => {
-                  setViewButtonClick(false);
-                  setUpdateButtonClick(false);
-                  setDeleteButtonCliked(false);
-                  setAddButtonCliked(true);
-                  onOpen();
-                }}
-              >
-                Add New
-              </Button>
-            </motion.div>
-          </motion.div>
-        </div>
-        <div className="flex justify-between items-center">
-          <span className="text-default-400 text-small text-white">
-            Total <span className="font-semibold">{tasks.length}</span> tasks
-          </span>
-          <label
-            className="flex items-center text-default-400 text-small mx-2 text-white"
-            // style={{ color: "#A1A1AA !important" }}
-          >
-            Rows per page:
-            <select
-              className="bg-transparent outline-none text-default-400 text-small  ml-2 text-white font-semibold"
-              onChange={onRowsPerPageChange}
-            >
-              <option value="5" className="text-black">
-                5
-              </option>
-              <option value="10" className="text-black">
-                10
-              </option>
-              <option value="15" className="text-black">
-                15
-              </option>
-            </select>
-          </label>
-        </div>
-      </div>
+      <TopContent
+        filterValue={filterValue}
+        onClear={onClear}
+        onSearchChange={onSearchChange}
+        statusFilter={statusFilter}
+        setStatusFilter={setStatusFilter}
+        priorityFilter={priorityFilter}
+        setPriorityFilter={setPriorityFilter}
+        visibleColumns={visibleColumns}
+        setVisibleColumns={setVisibleColumns}
+        tasksLength={tasks.length}
+        onRowsPerPageChange={onRowsPerPageChange}
+        onAddClick={() => {
+          setViewButtonClick(false);
+          setUpdateButtonClick(false);
+          setDeleteButtonCliked(false);
+          setAddButtonCliked(true);
+          onOpen();
+        }}
+      />
     );
   }, [
     filterValue,
@@ -527,71 +355,20 @@ export default function App() {
 
   const bottomContent = React.useMemo(() => {
     return (
-      <div className="py-2 px-2 flex justify-between items-center">
-        {/* <span className="w-[30%] text-small text-default-400">
-          {selectedKeys === "all"
-            ? "All items selected"
-            : `${selectedKeys.size} of ${filteredItems.length} selected`}
-        </span> */}
-        <Pagination
-          isCompact
-          showControls
-          showShadow
-          color="primary"
-          page={page}
-          total={pages}
-          onChange={setPage}
-        />
-        <div className="flex w-[30%] justify-end gap-2 ">
-          <Button
-            isDisabled={pages === 1}
-            size="sm"
-            variant="flat"
-            className="bg-white disabled:opacity-70"
-            onPress={onPreviousPage}
-          >
-            Previous
-          </Button>
-          <Button
-            isDisabled={pages === 1}
-            size="sm"
-            variant="flat"
-            className="bg-white disabled:opacity-70"
-            onPress={onNextPage}
-          >
-            Next
-          </Button>
-        </div>
-      </div>
+      <BottomContent
+        page={page}
+        pages={pages}
+        setPage={setPage}
+        onNextPage={onNextPage}
+        onPreviousPage={onPreviousPage}
+      />
     );
   }, [selectedKeys, items.length, page, pages, hasSearchFilter]);
+  /* eslint-enable react-hooks/exhaustive-deps */
 
   useEffect(() => {
-    const taskmastertoken = cookieCutter.get("taskmastertoken");
-    if (taskmastertoken) {
-      getuser(taskmastertoken).then((res) => {
-        setUser(res.user);
-        setToken(res.user?.token);
-      });
-    } else {
-      router.push("/login");
-    }
-  }, []);
-
-  useEffect(() => {
-    if (user?.token)
-      gettasks(user?.token ? user?.token : "").then((res) => {
-        if (res.error) {
-          toast.error(res.error);
-        } else {
-          setTasks(res.data.reverse());
-        }
-      });
-  }, [refresh, user?.token]);
-
-  useEffect(() => {
-    if (user?.token)
-      toast.success("Welcome Back" + " " + user?.name + "!", {
+    if (user?.name) {
+      toast.success("Welcome back" + " " + user.name + "!", {
         position: "bottom-center",
         autoClose: 2000,
         hideProgressBar: false,
@@ -600,14 +377,23 @@ export default function App() {
         theme: "light",
         transition: Flip,
       });
-  }, [user?.token]);
+    }
+  }, [user?.name]);
 
-  const bind = useLongPress((data) => {
+  useEffect(() => {
+    if (initialTasks) {
+      setTasks(initialTasks.reverse());
+    }
+  }, [initialTasks]);
+
+  // Client-side fetching removed
+
+  const bind = useLongPress((event, item: any) => {
     setUpdateButtonClick(false);
     setAddButtonCliked(false);
     setDeleteButtonCliked(false);
     setViewButtonClick(true);
-    setViewData(...data);
+    setViewData(item);
     onOpen();
   });
 
@@ -618,8 +404,6 @@ export default function App() {
           isOpen={isOpen}
           onOpenChange={onOpenChange}
           onOpen={onOpen}
-          refresh={refresh}
-          setRefresh={setRefresh}
         />
       ) : null}
 
@@ -628,9 +412,7 @@ export default function App() {
           isOpenUpdate={isOpen}
           onOpenChangeUpdate={onOpenChange}
           onOpenUpdate={onOpen}
-          data={updateData}
-          refresh={refresh}
-          setRefresh={setRefresh}
+          data={updateData as ITask}
         />
       ) : null}
 
@@ -639,9 +421,7 @@ export default function App() {
           isOpenView={isOpen}
           onOpenChangeView={onOpenChange}
           onOpenView={onOpen}
-          data={viewData}
-          refresh={refresh}
-          setRefresh={setRefresh}
+          data={viewData as ITask}
         />
       ) : null}
 
@@ -650,9 +430,7 @@ export default function App() {
           isOpenUpdate={isOpen}
           onOpenChangeUpdate={onOpenChange}
           onOpenUpdate={onOpen}
-          data={deleteData}
-          refresh={refresh}
-          setRefresh={setRefresh}
+          data={deleteData as ITask}
         />
       ) : null}
       <Table
@@ -661,7 +439,7 @@ export default function App() {
         bottomContent={bottomContent}
         bottomContentPlacement="outside"
         classNames={{
-          wrapper: "max-h-[382px] shadow-xl bg-opacity-70 ",
+          wrapper: "max-h-[382px] shadow-xl bg-opacity-70",
         }}
         selectedKeys={selectedKeys}
         selectionMode="single"
@@ -671,10 +449,9 @@ export default function App() {
         topContentPlacement="outside"
         onSelectionChange={setSelectedKeys}
         onSortChange={setSortDescriptor}
-        isLoading
       >
         <TableHeader columns={headerColumns}>
-          {(column) => (
+          {(column: any) => (
             <TableColumn
               key={column.uid}
               align={column.uid === "actions" ? "center" : "start"}
@@ -687,7 +464,7 @@ export default function App() {
         <TableBody emptyContent={"No tasks found"} items={sortedItems}>
           {(item) => (
             <TableRow
-              key={item.id}
+              key={item._id}
               onDoubleClick={() => {
                 setUpdateButtonClick(false);
                 setAddButtonCliked(false);
@@ -696,7 +473,7 @@ export default function App() {
                 setViewData(item);
                 onOpen();
               }}
-              {...bind(item)}
+              {...bind(item as any)}
             >
               {(columnKey) => (
                 <TableCell>

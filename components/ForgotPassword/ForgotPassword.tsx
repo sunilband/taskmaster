@@ -7,15 +7,16 @@ import { useState } from "react";
 import Link from "next/link";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-import { updatepassword } from "@/utils/apiCalls/UpdatePassword";
+import {
+  getUser,
+  resetPasswordAction,
+  sendRecoveryEmailAction,
+} from "@/app/actions/auth";
 import { useUserContext } from "@/context/userContexts";
-import { getuser } from "@/utils/apiCalls/GetUser";
-import { sendrecovery } from "@/utils/apiCalls/SendRecovery";
 import { useSearchParams } from "next/navigation";
 
 import { motion } from "framer-motion";
 import "./ForgotPassword.css";
-const cookieCutter = require("cookie-cutter");
 
 type Props = {};
 
@@ -27,20 +28,14 @@ const ForgotPassword = (props: Props) => {
   const [loggingIn, setLoggingIn] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] =
-    useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const router = useRouter();
 
   useEffect(() => {
-    const taskmastertoken = cookieCutter.get("taskmastertoken");
-    if (taskmastertoken) {
-      getuser(taskmastertoken).then((res) => {
-        setUser(res.user);
-      });
+    if (user?.token) {
       router.push("/");
-      // window.location.href = "/";
     }
-  }, []);
+  }, [user, router]);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -50,7 +45,7 @@ const ForgotPassword = (props: Props) => {
       return toast.error("Please fill all the fields");
     }
     try {
-      const data = await sendrecovery({ email });
+      const data = await sendRecoveryEmailAction(email);
       if (data.success) {
         setDisableBtn((prev) => !prev);
         toast.success(data.message);
@@ -63,9 +58,8 @@ const ForgotPassword = (props: Props) => {
     setLoggingIn(false);
   };
 
-
   // reset password
-  const resetPassword =async (e:any)=>{
+  const resetPassword = async (e: any) => {
     e.preventDefault();
     setLoggingIn(true);
     if (!password || !confirmPassword) {
@@ -78,13 +72,14 @@ const ForgotPassword = (props: Props) => {
       return toast.error("Password must be atleast 8 characters long");
     }
 
-    if(password !== confirmPassword){
+    if (password !== confirmPassword) {
       setLoggingIn(false);
       return toast.error("Passwords do not match");
     }
 
     try {
-      const data = await updatepassword({ verifyToken, password });
+      if (!verifyToken) return toast.error("Invalid token");
+      const data = await resetPasswordAction(verifyToken, password);
       if (data.success) {
         setDisableBtn((prev) => !prev);
         toast.success(data.message);
@@ -96,7 +91,7 @@ const ForgotPassword = (props: Props) => {
       console.log(error);
     }
     setLoggingIn(false);
-  }
+  };
   return (
     <div className="relative flex justify-center items-center h-screen w-screen  spacemono">
       <Waves />
@@ -157,11 +152,14 @@ const ForgotPassword = (props: Props) => {
               />
 
               <div className="flex flex-col gap-4">
-                <Button color="primary" isLoading={loggingIn} type="submit"
-                disabled={disableBtn}
-                className={
-                  disableBtn == true ? "opacity-50 cursor-not-allowed" : ""
-                }
+                <Button
+                  color="primary"
+                  isLoading={loggingIn}
+                  type="submit"
+                  disabled={disableBtn}
+                  className={
+                    disableBtn == true ? "opacity-50 cursor-not-allowed" : ""
+                  }
                 >
                   Verify
                 </Button>
@@ -195,11 +193,15 @@ const ForgotPassword = (props: Props) => {
               />
 
               <div className="flex flex-col gap-4">
-                <Button color="primary" isLoading={loggingIn} type="button" onClick={resetPassword}
-                disabled={disableBtn}
-                className={
-                  disableBtn == true ? "opacity-50 cursor-not-allowed" : ""
-                }
+                <Button
+                  color="primary"
+                  isLoading={loggingIn}
+                  type="button"
+                  onClick={resetPassword}
+                  disabled={disableBtn}
+                  className={
+                    disableBtn == true ? "opacity-50 cursor-not-allowed" : ""
+                  }
                 >
                   Reset
                 </Button>

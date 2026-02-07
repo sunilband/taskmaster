@@ -55,7 +55,7 @@ const BG = (props: Props) => {
           cy="106.524"
           r="105.849"
           fill="url(#paint0_linear_2_249)"
-          fill-opacity="0.15"
+          fillOpacity="0.15"
         />
         <defs>
           <linearGradient
@@ -66,8 +66,8 @@ const BG = (props: Props) => {
             y2="212.373"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stop-color="white" />
-            <stop offset="1" stop-color="white" stop-opacity="0" />
+            <stop stopColor="white" />
+            <stop offset="1" stopColor="white" stopOpacity="0" />
           </linearGradient>
         </defs>
       </svg>

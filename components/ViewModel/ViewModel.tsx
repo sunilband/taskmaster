@@ -12,7 +12,7 @@ import {
   Input,
 } from "@nextui-org/react";
 import { Divider } from "@nextui-org/react";
-import {convert} from 'html-to-text';
+import { convert } from "html-to-text";
 import { useUserContext } from "@/context/userContexts";
 import { dateParser, timeParser } from "@/utils/utils";
 import { Flip, Slide, toast } from "react-toastify";
@@ -22,21 +22,19 @@ const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 import "react-quill/dist/quill.snow.css";
 import "react-quill/dist/quill.bubble.css";
 
+import { ITask } from "@/types/index";
+
 type Props = {
-  onOpenView: any;
-  isOpenView: any;
-  onOpenChangeView: any;
-  data: any;
-  refresh: any;
-  setRefresh: any;
+  onOpenView: () => void;
+  isOpenView: boolean;
+  onOpenChangeView: () => void;
+  data: ITask;
 };
 const ViewModel = ({
   onOpenView,
   isOpenView,
   onOpenChangeView,
   data,
-  refresh,
-  setRefresh,
 }: Props) => {
   const { user } = useUserContext();
   const [task, setTask] = useState("");
@@ -49,7 +47,7 @@ const ViewModel = ({
     setDesc(data.desc);
     setPriority(data.priority);
     setStatus(data.status);
-  }, [refresh]);
+  }, [data]);
 
   const copyToClipboard = () => {
     const options = {
@@ -58,7 +56,7 @@ const ViewModel = ({
     };
     const html = data.desc;
     const text = convert(html, options);
-    
+
     navigator.clipboard
       .writeText(text)
       .then(() => {
@@ -76,14 +74,12 @@ const ViewModel = ({
         console.error("Error copying to clipboard: ", err);
       });
   };
-  
 
   return (
     <>
       <Modal
         backdrop={"blur"}
         isOpen={isOpenView}
-  
         onOpenChange={onOpenChangeView}
         placement="center"
         className="mx-4"
@@ -125,7 +121,6 @@ const ViewModel = ({
                       value={data.desc}
                       onChange={setDesc}
                       readOnly
-                      
                     />
 
                     <Divider className="my-1" />
@@ -144,8 +139,8 @@ const ViewModel = ({
                         data.status == "Completed"
                           ? "success"
                           : data.status == "Active"
-                          ? "warning"
-                          : "danger"
+                            ? "warning"
+                            : "danger"
                       }
                     >
                       {data.status}
