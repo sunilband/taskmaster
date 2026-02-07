@@ -11,12 +11,11 @@
   "dependencies": {
     "@nextui-org/react": "^2.1.13",
     "bcryptjs": "^2.4.3",
-    "cookie-cutter": "^0.2.0",
     "framer-motion": "^10.16.4",
     "html-to-text": "^9.0.5",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^7.5.3",
-    "next": "latest",
+    "mongoose": "7.5.3",
+    "next": "14.2.35",
     "nodemailer": "^6.9.7",
     "react": "latest",
     "react-dom": "latest",
@@ -25,13 +24,15 @@
     "use-long-press": "^3.2.0"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "@types/html-to-text": "^9.0.3",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
     "autoprefixer": "latest",
     "eslint": "latest",
-    "eslint-config-next": "latest",
+    "eslint-config-next": "14.2.35",
     "postcss": "latest",
     "tailwindcss": "latest",
     "typescript": "latest"

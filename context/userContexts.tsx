@@ -1,15 +1,11 @@
-"use client"
+"use client";
 import { createContext, useContext, useState } from "react";
 
-interface UserProps {
-  name: string | null;
-  email: string | null;
-  token: string | null;
-}
+import { IUserContext } from "@/types/index";
 
-interface User{
-  user: UserProps;
-  setUser: (user: UserProps) => void;
+interface User {
+  user: IUserContext;
+  setUser: (user: IUserContext) => void;
 }
 
 const UserContext = createContext<User>({
@@ -17,12 +13,20 @@ const UserContext = createContext<User>({
   setUser: () => {},
 });
 
-export const UserProvider = ({ children }:any) => {
-  const [user, setUser] = useState<UserProps>({
-    name: null,
-    email: null,
-    token: null,
-  });
+export const UserProvider = ({
+  children,
+  user: initialUser,
+}: {
+  children: React.ReactNode;
+  user?: IUserContext | null;
+}) => {
+  const [user, setUser] = useState<IUserContext>(
+    initialUser || {
+      name: null,
+      email: null,
+      token: null,
+    },
+  );
 
   return (
     <UserContext.Provider value={{ user, setUser }}>
@@ -31,4 +35,4 @@ export const UserProvider = ({ children }:any) => {
   );
 };
 
-export const useUserContext= () => useContext(UserContext);
+export const useUserContext = () => useContext(UserContext);

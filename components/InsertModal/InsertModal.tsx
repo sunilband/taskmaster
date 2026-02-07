@@ -3,8 +3,8 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import { toast } from "react-toastify";
 // import ReactQuill from "react-quill";
-import dynamic from 'next/dynamic';
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
+import dynamic from "next/dynamic";
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 import "react-quill/dist/quill.snow.css";
 
 import {
@@ -15,26 +15,17 @@ import {
   ModalFooter,
   Button,
   Input,
-  Textarea,
 } from "@nextui-org/react";
 import { Select, SelectItem } from "@nextui-org/react";
-import { createTask } from "@/utils/apiCalls/CreateTask";
 import { useUserContext } from "@/context/userContexts";
+import { createTaskAction } from "@/app/actions/task";
 
 type Props = {
-  onOpen: any;
-  isOpen: any;
-  onOpenChange: any;
-  refresh: any;
-  setRefresh: any;
+  onOpen: () => void;
+  isOpen: boolean;
+  onOpenChange: (isOpen: boolean) => void;
 };
-const InsertModal = ({
-  onOpen,
-  isOpen,
-  onOpenChange,
-  refresh,
-  setRefresh,
-}: Props) => {
+const InsertModal = ({ onOpen, isOpen, onOpenChange }: Props) => {
   const [disabled, setDisabled] = useState(false);
   const { user } = useUserContext();
   const [task, setTask] = useState("");
@@ -42,32 +33,37 @@ const InsertModal = ({
   const [priority, setPriority] = useState("");
   const [status, setStatus] = useState("");
 
-  const handleAddTask = () => {
+  const handleAddTask = async () => {
     try {
       setDisabled(true);
-      createTask(
-        { task, desc, priority, status },
-        user?.token ? user?.token : ""
-      ).then((res) => {
-        if (task === "" || desc === "" || priority === "" || status === "") {
-          setDisabled(false);
-          return toast.error("Please fill all the fields");
-        }
-        if (res.error) {
-          toast.error(res.error);
-          setDisabled(false);
-        } else {
-          setDisabled(true);
-          toast.success("Task Added !");
-          setDisabled(false);
-          setTask("");
-          setDesc("");
-          setPriority("");
-          setStatus("");
-          onOpenChange(false);
-          setRefresh(!refresh);
-        }
-      });
+
+      const formData = new FormData();
+      formData.append("task", task);
+      formData.append("desc", desc);
+      formData.append("priority", priority);
+      formData.append("status", status);
+
+      const res = await createTaskAction(null, formData);
+
+      if (task === "" || desc === "" || priority === "" || status === "") {
+        setDisabled(false);
+        return toast.error("Please fill all the fields");
+      }
+
+      if (!res.success) {
+        toast.error(res.error);
+        setDisabled(false);
+      } else {
+        setDisabled(true);
+        toast.success("Task Added !");
+        setDisabled(false);
+        setTask("");
+        setDesc("");
+        setPriority("");
+        setStatus("");
+        onOpenChange(false);
+        onOpenChange(false);
+      }
     } catch (error) {
       setDisabled(false);
     }
@@ -99,16 +95,6 @@ const InsertModal = ({
                   }}
                   value={task}
                 />
-                {/* <Textarea
-                  label="Description"
-                  type="text"
-                  variant="bordered"
-                  onChange={(e) => {
-                    setDesc(e.target.value);
-                  }}
-                  value={desc}
-                  style={{ whiteSpace: 'pre-wrap' }}
-                /> */}
 
                 <ReactQuill
                   theme="snow"
@@ -124,14 +110,13 @@ const InsertModal = ({
                         { align: [] },
                         { list: "ordered" },
                         { list: "bullet" },
-                        {list: 'check'},
+                        { list: "check" },
                       ],
-                      ["link", { color: [] }, { background: [] },"clean"],
-                     
+                      ["link", { color: [] }, { background: [] }, "clean"],
                     ],
                   }}
-                 placeholder="Description"
-                  style={{borderRadius: '0.5rem'}}
+                  placeholder="Description"
+                  style={{ borderRadius: "0.5rem" }}
                 />
 
                 <Select

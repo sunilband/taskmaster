@@ -3,8 +3,8 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import { toast } from "react-toastify";
 // import ReactQuill from "react-quill";
-import dynamic from 'next/dynamic';
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
+import dynamic from "next/dynamic";
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 import "react-quill/dist/quill.snow.css";
 
 import {
@@ -19,23 +19,21 @@ import {
 } from "@nextui-org/react";
 import { Select, SelectItem } from "@nextui-org/react";
 import { useUserContext } from "@/context/userContexts";
-import { updatetask } from "@/utils/apiCalls/UpdateTask";
+import { updateTaskAction } from "@/app/actions/task";
+
+import { ITask } from "@/types/index";
 
 type Props = {
-  onOpenUpdate: any;
-isOpenUpdate: any;
-  onOpenChangeUpdate: any;
-  data: any;
-  refresh: any;
-  setRefresh: any;
+  onOpenUpdate: () => void;
+  isOpenUpdate: boolean;
+  onOpenChangeUpdate: (isOpen: boolean) => void;
+  data: ITask;
 };
 const UpdateModal = ({
   onOpenUpdate,
   isOpenUpdate,
   onOpenChangeUpdate,
   data,
-  refresh,
-  setRefresh,
 }: Props) => {
   const [disabled, setDisabled] = useState(false);
   const { user } = useUserContext();
@@ -49,9 +47,9 @@ const UpdateModal = ({
     setDesc(data.desc);
     setPriority(data.priority);
     setStatus(data.status);
-  }, [refresh]);
+  }, [data]);
 
-  const handleAddTask = () => {
+  const handleUpdateTask = async () => {
     // check if updated or values same
     if (
       task === data.task &&
@@ -64,29 +62,35 @@ const UpdateModal = ({
 
     try {
       setDisabled(true);
-      updatetask(
-        { task, desc, priority, status, id: data.id },
-        user?.token ? user?.token : ""
-      ).then((res) => {
-        if (task === "" || desc === "" || priority === "" || status === "") {
-          setDisabled(false);
-          return toast.error("Please fill all the fields");
-        }
-        if (res.error) {
-          setDisabled(false);
-          toast.error(res.error);
-        } else {
-          setDisabled(true);
-          toast.success(res.message);
-          setDisabled(false);
-          setRefresh(!refresh);
-          setTask("");
-          setDesc("");
-          setPriority("");
-          setStatus("");
-          onOpenChangeUpdate(false);
-        }
-      });
+
+      const formData = new FormData();
+      formData.append("id", data._id);
+      formData.append("task", task);
+      formData.append("desc", desc);
+      formData.append("priority", priority);
+      formData.append("status", status);
+
+      const res = await updateTaskAction(null, formData);
+
+      if (task === "" || desc === "" || priority === "" || status === "") {
+        setDisabled(false);
+        return toast.error("Please fill all the fields");
+      }
+
+      if (!res.success) {
+        setDisabled(false);
+        toast.error(res.error);
+      } else {
+        setDisabled(true);
+        toast.success(res.message);
+        setDisabled(false);
+        // setRefresh(!refresh); // Not needed with revalidatePath
+        setTask("");
+        setDesc("");
+        setPriority("");
+        setStatus("");
+        onOpenChangeUpdate(false);
+      }
     } catch (error) {
       setDisabled(false);
       console.log(error);
@@ -183,7 +187,7 @@ const UpdateModal = ({
               <ModalFooter>
                 <Button
                   color="warning"
-                  onPress={handleAddTask}
+                  onPress={handleUpdateTask}
                   isDisabled={disabled}
                 >
                   Update

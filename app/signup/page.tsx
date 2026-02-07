@@ -1,13 +1,10 @@
-import Signup from '@/components/Signup/Signup'
-import React from 'react'
+import Signup from "@/components/Signup/Signup.client";
+import React from "react";
 
-
-type Props = {}
+type Props = {};
 
 const page = (props: Props) => {
-  return (
-    <Signup/>
-  )
-}
+  return <Signup />;
+};
 
-export default page
+export default page;

@@ -1,53 +1,175 @@
-import { NextResponse } from "next/server";
+"use server";
+
 import { UserModel } from "@/utils/backend/userModel";
 import { connectDB } from "@/utils/backend/mongoDB";
-import { sendMail } from "../../../utils/mailService";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { sendMail } from "@/utils/mailService";
+import { ActionResponse, IUserContext } from "@/types/index";
 
-export async function POST(request) {
+export async function loginAction(
+  prevState: any,
+  formData: FormData,
+): Promise<ActionResponse> {
   try {
-    const {email} = await request.json();
-	if (!email){
-		return new NextResponse(
-			JSON.stringify({
-			  success: false,
-			  error: "Incomplete Data",
-			}),
-			{
-			  status: 400,
-			}
-		)
-	}
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
 
-	await connectDB();
+    if (!email || !password) {
+      return { success: false, error: "Incomplete data" };
+    }
 
-    let user = await UserModel.findOne({ email });
-    if (!user)
-      return new NextResponse(
-        JSON.stringify({
-          success: false,
-          error: "User does not exist",
-        }),
-        {
-          status: 400,
-        }
-      );
+    await connectDB();
+
+    let user = await UserModel.findOne({ email }).select("+password");
+    if (!user) {
+      return { success: false, error: "Invalid credentials" };
+    }
+
+    let decryptedPass = bcrypt.compareSync(password, user.password);
+
+    if (!decryptedPass) {
+      return { success: false, error: "Invalid credentials" };
+    }
 
     const token = jwt.sign(
-      { _id:user._id },
-      process.env.NEXT_PUBLIC_JWT_SECRET
+      { id: user._id },
+      process.env.NEXT_PUBLIC_JWT_SECRET as string,
+    );
+
+    cookies().set({
+      name: "taskmastertoken",
+      value: token,
+      path: "/",
+      maxAge: 15 * 24 * 60 * 60 * 1000,
+    });
+
+    return {
+      success: true,
+      message: "Welcome back " + user.name + "!",
+      user: {
+        name: user.name,
+        email: user.email,
+        token: token,
+      },
+    };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+}
+
+export async function signupAction(
+  prevState: any,
+  formData: FormData,
+): Promise<ActionResponse> {
+  try {
+    const name = formData.get("name") as string;
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+
+    if (!name || !email || !password) {
+      return { success: false, error: "Incomplete data" };
+    }
+
+    await connectDB();
+
+    let user = await UserModel.findOne({ email });
+    if (user) {
+      return { success: false, error: "User already exists" };
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await UserModel.create({ name, email, password: hashedPassword });
+
+    return { success: true, message: "User created!" };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+}
+
+export async function getUser(token: string): Promise<IUserContext | null> {
+  try {
+    if (!token) return null;
+
+    await connectDB();
+    const verified = jwt.verify(
+      token,
+      process.env.NEXT_PUBLIC_JWT_SECRET as string,
+    ) as any;
+
+    let user = await UserModel.findById(verified.id);
+    if (!user) return null;
+
+    // Convert ObjectId to string to pass to Client Components
+    return {
+      _id: user._id.toString(),
+      name: user.name,
+      email: user.email,
+      token: token,
+    };
+  } catch (error) {
+    return null;
+  }
+}
+
+export async function verifyEmailAction(
+  token: string,
+): Promise<ActionResponse> {
+  try {
+    const { name, email, password } = jwt.verify(
+      token,
+      process.env.NEXT_PUBLIC_JWT_SECRET as string,
+    ) as any;
+
+    if (!name || !email || !password) {
+      return { success: false, error: "Incomplete data" };
+    }
+
+    await connectDB();
+
+    let user = await UserModel.findOne({ email });
+    if (user) {
+      return { success: false, error: "User already exists" };
+    }
+
+    const hashedPassword = await bcrypt.hash(password.toString(), 10);
+    await UserModel.create({ name, email, password: hashedPassword });
+
+    return { success: true, message: "User created!" };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+}
+
+export async function sendRecoveryEmailAction(
+  email: string,
+): Promise<ActionResponse> {
+  try {
+    if (!email) {
+      return { success: false, error: "Incomplete Data" };
+    }
+
+    await connectDB();
+
+    let user = await UserModel.findOne({ email });
+    if (!user) {
+      return { success: false, error: "User does not exist" };
+    }
+
+    const token = jwt.sign(
+      { _id: user._id },
+      process.env.NEXT_PUBLIC_JWT_SECRET as string,
     );
     const link = process.env.NEXT_PUBLIC_RECOVERY_URL + `?verifyToken=${token}`;
-   
+
     const html = `
     <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8">
   	<meta name="viewport" content="width=device-width, initial-scale=1.0;">
- 	<meta name="format-detection" content="telephone=no"/>
-
-
-
+  <meta name="format-detection" content="telephone=no"/>
 	<style>
 /* Reset styles */ 
 body { margin: 0; padding: 0; min-width: 100%; width: 100% !important; height: 100% !important;}
@@ -57,73 +179,43 @@ img { border: 0; line-height: 100%; outline: none; text-decoration: none; -ms-in
 #outlook a { padding: 0; }
 .ReadMsgBody { width: 100%; } .ExternalClass { width: 100%; }
 .ExternalClass, .ExternalClass p, .ExternalClass span, .ExternalClass font, .ExternalClass td, .ExternalClass div { line-height: 100%; }
-
-/* Rounded corners for advanced mail clients only */ 
 @media all and (min-width: 560px) {
 	.container { border-radius: 8px; -webkit-border-radius: 8px; -moz-border-radius: 8px; -khtml-border-radius: 8px;}
 }
-
-/* Set color for auto links (addresses, dates, etc.) */ 
 a, a:hover {
 	color: #127DB3;
 }
 .footer a, .footer a:hover {
 	color: #999999;
 }
-
  	</style>
-
-	<!-- MESSAGE SUBJECT -->
 	<title>Password Recovery !</title>
-
 </head>
-
-<!-- BODY -->
-<!-- Set message background color (twice) and text color (twice) -->
 <body topmargin="0" rightmargin="0" bottommargin="0" leftmargin="0" marginwidth="0" marginheight="0" width="100%" style="border-collapse: collapse; border-spacing: 0; margin: 0; padding: 0; width: 100%; height: 100%; -webkit-font-smoothing: antialiased; text-size-adjust: 100%; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; line-height: 100%;
 	background-color: #F0F0F0;
 	color: #000000;"
 	bgcolor="#F0F0F0"
 	text="#000000">
-
-<!-- SECTION / BACKGROUND -->
-<!-- Set message background color one again -->
 <table width="100%" align="center" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse; border-spacing: 0; margin: 0; padding: 0; width: 100%;" class="background"><tr><td align="center" valign="top" style="border-collapse: collapse; border-spacing: 0; margin: 0; padding: 0;"
 	bgcolor="#F0F0F0">
-
-<!-- WRAPPER -->
-<!-- Set wrapper width (twice) -->
 <table border="0" cellpadding="0" cellspacing="0" align="center"
 	width="560" style="border-collapse: collapse; border-spacing: 0; padding: 0; width: inherit;
 	max-width: 560px;" class="wrapper">
-
 	<tr>
 		<td align="center" valign="top" style="border-collapse: collapse; border-spacing: 0; margin: 0; padding: 0; padding-left: 6.25%; padding-right: 6.25%; width: 87.5%;
 			padding-top: 20px;
 			padding-bottom: 20px;">
-
-			<!-- PREHEADER -->
-			<!-- Set text color to background color -->
 			<div style="display: none; visibility: hidden; overflow: hidden; opacity: 0; font-size: 1px; line-height: 1px; height: 0; max-height: 0; max-width: 0;
 			color: #F0F0F0;" class="preheader">
 			Recover your account by resseting your password.	
             </div>
-
 		</td>
 	</tr>
-
-<!-- End of WRAPPER -->
 </table>
-
-<!-- WRAPPER / CONTEINER -->
-<!-- Set conteiner background color -->
 <table border="0" cellpadding="0" cellspacing="0" align="center"
 	bgcolor="#FFFFFF"
 	width="560" style="border-collapse: collapse; border-spacing: 0; padding: 0; width: inherit;
 	max-width: 560px;" class="container">
-
-	<!-- HEADER -->
-	<!-- Set text color and font family ("sans-serif" or "Georgia, serif") -->
 	<tr>
 		<td align="center" valign="top" style="border-collapse: collapse; border-spacing: 0; margin: 0; padding: 0; padding-left: 6.25%; padding-right: 6.25%; width: 87.5%; font-size: 24px; font-weight: bold; line-height: 130%;
 			padding-top: 25px;
@@ -132,9 +224,6 @@ a, a:hover {
 				Welcome ${user.name} !
 		</td>
 	</tr>
-	
-	<!-- SUBHEADER -->
-	<!-- Set text color and font family ("sans-serif" or "Georgia, serif") -->
 	<tr>
 		<td align="center" valign="top" style="border-collapse: collapse; border-spacing: 0; margin: 0; padding: 0; padding-bottom: 3px; padding-left: 6.25%; padding-right: 6.25%; width: 87.5%; font-size: 18px; font-weight: 300; line-height: 150%;
 			padding-top: 5px;
@@ -143,9 +232,6 @@ a, a:hover {
 				Forgot your password ? no issues ..! .
 		</td>
 	</tr>
-
-	<!-- HERO IMAGE -->
-	<!-- Image text color should be opposite to background color. Set your url, image src, alt and title. Alt text should fit the image size. Real image size should be x2 (wrapper x2). Do not set height for flexible images (including "auto"). URL format: http://domain.com/?utm_source={{Campaign-Source}}&utm_medium=email&utm_content={{Ìmage-Name}}&utm_campaign={{Campaign-Name}} -->
 	<tr>
 		<td align="center" valign="top" style="border-collapse: collapse; border-spacing: 0; margin: 0; padding: 0;
 			padding-top: 20px;" class="hero"><a target="_blank" style="text-decoration: none;"
@@ -157,9 +243,6 @@ a, a:hover {
 			max-width: 560px;
 			color: #000000; font-size: 13px; margin: 0; padding: 0; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; border: none; display: block;"/></a></td>
 	</tr>
-
-	<!-- PARAGRAPH -->
-	<!-- Set text color and font family ("sans-serif" or "Georgia, serif"). Duplicate all text styles in links, including line-height -->
 	<tr>
 		<td align="center" valign="top" style="border-collapse: collapse; border-spacing: 0; margin: 0; padding: 0; padding-left: 6.25%; padding-right: 6.25%; width: 87.5%; font-size: 17px; font-weight: 400; line-height: 160%;
 			padding-top: 25px; 
@@ -169,9 +252,6 @@ a, a:hover {
         You will be redirected to the TaskMaster website.
 		</td>
 	</tr>
-
-	<!-- BUTTON -->
-	<!-- Set button background color at TD, link/text color at A and TD, font family ("sans-serif" or "Georgia, serif") at TD. For verification codes add "letter-spacing: 5px;". Link format: http://domain.com/?utm_source={{Campaign-Source}}&utm_medium=email&utm_content={{Button-Name}}&utm_campaign={{Campaign-Name}} -->
 	<tr>
 		<td align="center" valign="top" style="border-collapse: collapse; border-spacing: 0; margin: 0; padding: 0; padding-left: 6.25%; padding-right: 6.25%; width: 87.5%;
 			padding-top: 25px;
@@ -186,56 +266,68 @@ a, a:hover {
 			</td></tr></table></a>
 		</td>
 	</tr>
-
-
-
-	
-
-	
-
-
-
-<!-- End of WRAPPER -->
-</table>
-
-
-
-	<!-- FOOTER -->
-	<!-- Set text color and font family ("sans-serif" or "Georgia, serif"). Duplicate all text styles in links, including line-height -->
 	<tr>
 		<td align="center" valign="top" style="border-collapse: collapse; border-spacing: 0; margin: 0; padding: 0; padding-left: 6.25%; padding-right: 6.25%; width: 87.5%; font-size: 13px; font-weight: 400; line-height: 150%;
 			padding-top: 20px;
 			padding-bottom: 20px;
 			color: #999999;
 			font-family: sans-serif;" class="footer">
-
 				This email  was sent to you because you choose to reset your TaskMaster password . If this is a mistake please report to our support at sunilbandwork@gmail.com.
-
-				
 		</td>
 	</tr>
-
-<!-- End of WRAPPER -->
 </table>
-
-<!-- End of SECTION / BACKGROUND -->
 </td></tr></table>
-
 </body>
 </html>
     `;
 
     await sendMail(email, "Reset Password", html);
-    return NextResponse.json(
-      { success: true, message: "Email verification link sent to your mail !" },
-      { status: 200 }
+    return {
+      success: true,
+      message: "Email verification link sent to your mail !",
+    };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+}
+
+export async function resetPasswordAction(
+  token: string,
+  password: string,
+): Promise<ActionResponse> {
+  try {
+    const { _id } = jwt.verify(
+      token,
+      process.env.NEXT_PUBLIC_JWT_SECRET as string,
+    ) as any;
+
+    if (!_id) {
+      return { success: false, error: "Invalid token" };
+    }
+
+    await connectDB();
+    let hashedPassword = await bcrypt.hash(password.toString(), 10);
+    let user = await UserModel.findByIdAndUpdate(
+      _id,
+      { password: hashedPassword },
+      { new: true },
     );
-  } catch (error) {
-    console.log(error);
-    return NextResponse.json({
-      success: false,
-      error: error.toSting(),
-      message: "Email Not Sent Successfully",
-    });
+
+    if (!user) {
+      return { success: false, error: "No user found" };
+    }
+
+    return { success: true, message: "Password Updated!" };
+  } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+}
+
+export async function logoutAction(): Promise<ActionResponse> {
+  try {
+    cookies().delete("taskmastertoken");
+    return { success: true, message: "Logged out successfully" };
+  } catch (error: any) {
+    return { success: false, error: error.message };
   }
 }
