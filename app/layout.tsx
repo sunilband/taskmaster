@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { UserProvider } from "@/context/userContexts";
 import { cookies } from "next/headers";
 import { getUser } from "@/app/actions/auth";
+import RegisterSW from "@/components/register-sw";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,6 +16,16 @@ export const metadata: Metadata = {
   title: "Task Master",
   description:
     "Task Master is a task management and notes taking app built with Next.js and NextUI. It uses MongoDB for database and JWT for authentication.",
+  manifest: "/manifest.json",
+  themeColor: "#111111",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Task Master",
+  },
+  icons: {
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export default async function RootLayout({
@@ -35,6 +46,7 @@ export default async function RootLayout({
               {children}
             </>
             <ToastContainer />
+            <RegisterSW />
           </Providers>
         </UserProvider>
       </body>
